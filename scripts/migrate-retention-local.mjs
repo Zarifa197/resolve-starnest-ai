@@ -1,0 +1,10 @@
+import {DatabaseSync} from 'node:sqlite';
+import {readFileSync,readdirSync,existsSync} from 'node:fs';
+const directory='.wrangler/state/v3/d1/miniflare-D1DatabaseObject';
+if(!existsSync(directory))throw Error('Start the existing dev server first to initialize its local D1 database.');
+const files=readdirSync(directory).filter(file=>file.endsWith('.sqlite')&&file!=='metadata.sqlite');
+if(files.length!==1)throw Error('Expected exactly one local D1 database. Select the database manually before applying this migration.');
+const db=new DatabaseSync(`${directory}/${files[0]}`);
+if(!db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='customers'").get())throw Error('Apply the existing base migrations before the retention migration.');
+for(const name of ['0003_retention_workflow.sql','0004_shopify_agent.sql'])db.exec(readFileSync(new URL('../drizzle/'+name,import.meta.url),'utf8'));db.close();
+console.log('Additive retention migration applied. Existing customer and webhook records were preserved.');

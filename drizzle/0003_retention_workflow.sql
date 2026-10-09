@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS retention_accounts (id TEXT PRIMARY KEY, workspace TEXT NOT NULL, name TEXT NOT NULL, email TEXT, source TEXT NOT NULL, profile TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS retention_events (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES retention_accounts(id), body TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS retention_events_account ON retention_events(account_id);
+CREATE TABLE IF NOT EXISTS retention_decisions (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES retention_accounts(id), fingerprint TEXT NOT NULL, created_at TEXT NOT NULL, diagnosis TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS retention_decisions_account ON retention_decisions(account_id, created_at);
+CREATE TABLE IF NOT EXISTS retention_actions (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES retention_accounts(id), decision_id TEXT NOT NULL UNIQUE, body TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS retention_actions_account ON retention_actions(account_id);
+CREATE TABLE IF NOT EXISTS retention_audit (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES retention_accounts(id), kind TEXT NOT NULL, detail TEXT NOT NULL, at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS retention_audit_account ON retention_audit(account_id, at);
+CREATE TABLE IF NOT EXISTS retention_settings (workspace TEXT PRIMARY KEY, body TEXT NOT NULL);
