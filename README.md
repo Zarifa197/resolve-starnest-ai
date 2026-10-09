@@ -6,7 +6,7 @@ Resolve is an AI-assisted retention workspace for online businesses. It brings c
 
 An incomplete checkout can warrant checkout help; repeated integration failures can warrant troubleshooting. A customer-requested cancellation does not prove dissatisfaction, and browsing alone does not justify outreach. Resolve can recommend **no action** when contact would be inappropriate.
 
-[Website](https://resolve-starnest-ai.vercel.app/) · [Judge demo](https://resolve-starnest-ai.vercel.app/demo) · [Judge instructions](JUDGE_GUIDE.md) · [Submission audit](SUBMISSION_AUDIT.md) · [Development provenance](PROVENANCE.md)
+[Website](https://resolve-starnest-ai.vercel.app/) · [Judge demo](https://resolve-starnest-ai.vercel.app/demo) · [Judge instructions](JUDGE_GUIDE.md) · [Shopify tracking setup](SHOPIFY_TRACKING.md) · [Submission audit](SUBMISSION_AUDIT.md) · [Development provenance](PROVENANCE.md)
 
 > **Public deployment status — October 9, 2026, 19:32 Baku:** the landing and demo pages load, but starting the hosted demo returns “Storage is temporarily unavailable.” The public end-to-end demo is blocked until managed database access is repaired. The working local demonstration and external API checks below are separate evidence; they do not establish a working hosted workflow.
 
@@ -34,7 +34,7 @@ These results were recorded on October 9, 2026. “Local” means the applicatio
 | Shopify synchronization | Actual authorized development store: **5 customers, 2 orders, 0 abandoned checkouts** synchronized through the local application. Live abandoned-checkout recovery is not proved. |
 | Gemini analysis | Actual `gemini-3.5-flash-lite` API: **5 of 6 synthetic evaluation contexts produced validated results**; the sixth was rejected for conflicting with communication policy. |
 | Local judge journey | Real Gemini analysis, recorded approval, simulated delivery, simulated re-engagement, and history surviving reload. The checkout example’s score changed **45 → 0** after a synthetic completion event. |
-| Automated verification | **46 test entries passed; 0 failed; 0 skipped.** Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
+| Automated verification | **51 test entries passed; 0 failed; 0 skipped** in the latest local pass. Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
 | Real customer email and revenue | **Not verified.** No live customer retention result or inbox delivery is claimed. |
 
 The six-context Gemini evaluation measures category agreement and evidence references. The rule baseline selected the expected categories in all six contexts. This small evaluation does **not** establish superior AI accuracy, churn prediction, commercial uplift, or complete factual correctness of every generated sentence.
@@ -48,13 +48,29 @@ The judge route is separate from merchant administration. **No account, password
 Once storage is operational:
 
 1. Open `/demo` and click **Start judge demo**.
-2. Inspect the checkout customer’s event timeline and score.
+2. Inspect Ava’s four-step shopping timeline and score.
 3. Click **Analyze with AI** and read the explanation, uncertainty, evidence, and message draft.
 4. Click **Approve & simulate delivery**. This records a simulation and sends no email.
 5. Click **Simulate re-engagement** and inspect the new outcome event and revised score.
 6. Reload to confirm history persists. Use **Reset demo** to restart.
 
 Sessions expire after one hour. Without a server-side Gemini key, the interface identifies the deterministic fallback; fallback output is not presented as a live model response. Follow [JUDGE_GUIDE.md](JUDGE_GUIDE.md) for the full walkthrough and current public availability.
+
+## Inspect the fictional data
+
+`/demo` includes a read-only preview that works even when persistent storage is unavailable. Every case shows a plain-language story, expected response, consent status, UTC timeline, and expandable profile/event JSON. Download [the complete dataset](public/demo-data.json); it contains only fictional people and `example.com` email addresses.
+
+| Fictional case | What happened | Expected response |
+| --- | --- | --- |
+| Ava | Viewed Trail Shoes → cart → checkout → incomplete | Offer checkout help; stopping reason unknown |
+| Leo | Browsed products without a checkout | Observe; no email |
+| Maya | Completed the previously incomplete checkout | No recovery message |
+| Oliver | Requested order cancellation | Offer support without inventing a reason |
+| Noah | Incomplete checkout, email opted out | Internal review; no email |
+| Emma | A previous message was simulated one hour ago | Wait; contact cooldown applies |
+| Northstar | Fictional SaaS integration failures and falling usage | Technical troubleshooting |
+
+Expected responses are inspectable rule-baseline expectations, **not cached Gemini answers**. Live analysis runs separately and must pass validation. Interactive demo timestamps are relative to session creation; the downloadable snapshot uses fixed UTC times. No real email is sent. The public [English guide](https://resolve-starnest-ai.vercel.app/guide) explains judge steps and actual Shopify setup separately.
 
 ## Architecture
 
@@ -96,7 +112,7 @@ npm ci
 npm run build
 ```
 
-For a **new, empty local database**, apply the six committed base migrations in numeric order:
+For a **new, empty local database**, apply the seven committed migrations in numeric order:
 
 ```sh
 for migration in \
@@ -105,14 +121,15 @@ for migration in \
   drizzle/0002_open_expediter.sql \
   drizzle/0003_retention_workflow.sql \
   drizzle/0004_shopify_agent.sql \
-  drizzle/0005_judge_sessions.sql
+  drizzle/0005_judge_sessions.sql \
+  drizzle/0006_pixel_collectors.sql
 do
   npx wrangler d1 execute DB --local \
     --config dist/server/wrangler.json --file "$migration"
 done
 ```
 
-Do not rerun the base migrations against a populated database. Back up existing data and apply only migrations that are missing. The experimental `0006_pixel_collectors.sql` in the development workspace is separate from the committed demo prerequisites.
+Do not rerun the base migrations against a populated database. Back up existing data and apply only migrations that are missing. Migration `0006` adds the optional anonymous pixel collector and its quotas.
 
 Create an ignored `.dev.vars` file if using Gemini:
 
@@ -141,7 +158,7 @@ Import this repository with root directory `./` and framework preset **Next.js**
 
 The build emits `.next-vercel`; an output-directory mismatch can make a successful Next.js build fail deployment. Use the Vercel project’s output setting if its configuration does not already specify that directory.
 
-Vercel functions require **managed storage**. The laptop’s `.wrangler` SQLite files are not durable Vercel storage. Create a dedicated Cloudflare D1 database and apply migrations `0000` through `0005` above to that database once, in numeric order. For authenticated Wrangler, use `--remote` and the actual managed database’s configuration/name instead of the local command above.
+Vercel functions require **managed storage**. The laptop’s `.wrangler` SQLite files are not durable Vercel storage. Create a dedicated Cloudflare D1 database and apply migrations `0000` through `0006` above to that database once, in numeric order. For authenticated Wrangler, use `--remote` and the actual managed database’s configuration/name instead of the local command above.
 
 Save these variables in **Vercel → Project → Environment Variables → Production**:
 
@@ -186,7 +203,7 @@ The model evaluation script is `scripts/evaluate-gemini.mjs`. It calls the actua
 | `lib/merchant-auth.ts`, `lib/merchant-policy.ts` | Authentication and execution policy |
 | `build/node-runtime.ts`, `lib/d1-http.ts` | Vercel-to-D1 storage adapter |
 | `drizzle/`, `tests/` | Database migrations and automated verification |
-| `extensions/resolve-pixel/` | Experimental Shopify pixel; not verified live |
+| `extensions/resolve-pixel/`, `lib/pixel-collector.ts` | Anonymous storefront collection; not verified live |
 
 ## Boundaries and unfinished work
 

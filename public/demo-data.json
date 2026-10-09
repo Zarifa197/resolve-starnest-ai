@@ -1,0 +1,414 @@
+{
+  "title": "Resolve inspectable fictional demo dataset",
+  "synthetic": true,
+  "referenceTime": "2026-10-09T12:00:00.000Z",
+  "timeZone": "UTC",
+  "description": "Fictional teaching examples; no real people, transactions, delivered emails, or measured retention. Live judge sessions use the same scenarios with relative times.",
+  "inspection": "Read each timeline from oldest to newest. Expected actions are rule-baseline teaching expectations, not cached AI responses. Gemini results are generated separately and validated.",
+  "cases": [
+    {
+      "id": "checkout",
+      "name": "Ava",
+      "title": "Checkout left incomplete",
+      "story": "Ava viewed Trail Shoes, added them to the cart, and started checkout. Five hours passed without a completed purchase.",
+      "expected": "checkout_recovery",
+      "expectedLabel": "Offer checkout help",
+      "reason": "An incomplete checkout supports a helpful follow-up when permission allows it. The reason for stopping is unknown.",
+      "account": {
+        "id": "read-only-preview:checkout",
+        "workspace": "read-only-preview",
+        "name": "Ava",
+        "email": "ava@example.com",
+        "source": "demo",
+        "version": 1,
+        "profile": {
+          "plan": null,
+          "mrr": null,
+          "purchase": "No earlier purchases are included in this example",
+          "onboarding": null,
+          "emailConsent": "allowed"
+        }
+      },
+      "events": [
+        {
+          "id": "ava-view",
+          "kind": "product_viewed",
+          "at": "2026-10-09T06:30:00.000Z",
+          "summary": "Ava viewed Trail Shoes.",
+          "data": {
+            "product": "Trail Shoes"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "ava-cart",
+          "kind": "product_added_to_cart",
+          "at": "2026-10-09T06:36:00.000Z",
+          "summary": "Ava added Trail Shoes to the cart.",
+          "data": {
+            "product": "Trail Shoes"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "ava-checkout",
+          "kind": "checkout_started",
+          "at": "2026-10-09T06:42:00.000Z",
+          "summary": "Ava started checkout for Trail Shoes.",
+          "data": {
+            "checkoutId": "synthetic-checkout",
+            "products": "Trail Shoes"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "checkout-incomplete",
+          "kind": "checkout_abandoned",
+          "at": "2026-10-09T10:42:00.000Z",
+          "summary": "Fictional checkout for Trail Shoes remained incomplete after the waiting period. The reason is unknown.",
+          "data": {
+            "checkoutId": "synthetic-checkout",
+            "products": "Trail Shoes",
+            "waitHours": 4,
+            "confidence": "Observed incompletion; cause unknown"
+          },
+          "synthetic": true
+        }
+      ],
+      "previousOutreach": null
+    },
+    {
+      "id": "bluepeak",
+      "name": "Leo",
+      "title": "Browsing without a purchase",
+      "story": "Leo viewed a backpack and a collection. No cart, checkout, or purchase was recorded.",
+      "expected": "no_action",
+      "expectedLabel": "Observe without emailing",
+      "reason": "Viewing products is normal shopping behavior. It does not prove a problem or justify an email.",
+      "account": {
+        "id": "read-only-preview:bluepeak",
+        "workspace": "read-only-preview",
+        "name": "Leo",
+        "email": "leo@example.com",
+        "source": "demo",
+        "version": 1,
+        "profile": {
+          "plan": null,
+          "mrr": null,
+          "purchase": "Only the fictional events in the timeline are supplied",
+          "onboarding": null,
+          "emailConsent": "allowed"
+        }
+      },
+      "events": [
+        {
+          "id": "leo-collection",
+          "kind": "collection_viewed",
+          "at": "2026-10-09T10:00:00.000Z",
+          "summary": "Leo browsed the Weekend Essentials collection.",
+          "data": {},
+          "synthetic": true
+        },
+        {
+          "id": "leo-view",
+          "kind": "product_viewed",
+          "at": "2026-10-09T10:12:00.000Z",
+          "summary": "Leo viewed the Weekend Backpack.",
+          "data": {
+            "product": "Weekend Backpack"
+          },
+          "synthetic": true
+        }
+      ],
+      "previousOutreach": null
+    },
+    {
+      "id": "meridian",
+      "name": "Maya",
+      "title": "Purchase already completed",
+      "story": "Maya paused checkout, then completed an order before any retention message was sent.",
+      "expected": "no_action",
+      "expectedLabel": "No recovery message needed",
+      "reason": "A completed purchase resolves the incomplete checkout. Do not send an outdated reminder.",
+      "account": {
+        "id": "read-only-preview:meridian",
+        "workspace": "read-only-preview",
+        "name": "Maya",
+        "email": "maya@example.com",
+        "source": "demo",
+        "version": 1,
+        "profile": {
+          "plan": null,
+          "mrr": null,
+          "purchase": "Only the fictional events in the timeline are supplied",
+          "onboarding": null,
+          "emailConsent": "allowed"
+        }
+      },
+      "events": [
+        {
+          "id": "maya-incomplete",
+          "kind": "checkout_abandoned",
+          "at": "2026-10-09T04:00:00.000Z",
+          "summary": "Fictional checkout for Trail Shoes remained incomplete after the waiting period. The reason is unknown.",
+          "data": {
+            "checkoutId": "synthetic-maya",
+            "products": "Trail Shoes",
+            "waitHours": 4,
+            "confidence": "Observed incompletion; cause unknown"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "maya-complete",
+          "kind": "checkout_completed",
+          "at": "2026-10-09T11:00:00.000Z",
+          "summary": "Maya completed checkout for Trail Shoes.",
+          "data": {
+            "checkoutId": "synthetic-maya",
+            "products": "Trail Shoes"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "maya-paid",
+          "kind": "order_paid",
+          "at": "2026-10-09T11:06:00.000Z",
+          "summary": "Maya’s fictional order was paid. No recovery email was needed.",
+          "data": {
+            "product": "Trail Shoes"
+          },
+          "synthetic": true
+        }
+      ],
+      "previousOutreach": null
+    },
+    {
+      "id": "pine",
+      "name": "Oliver",
+      "title": "Customer-requested cancellation",
+      "story": "Oliver bought a water bottle and then requested cancellation. No specific explanation was provided.",
+      "expected": "post_cancellation_followup",
+      "expectedLabel": "Offer cancellation support",
+      "reason": "Offer help without assuming dissatisfaction, financial difficulty, or a reason that was not recorded.",
+      "account": {
+        "id": "read-only-preview:pine",
+        "workspace": "read-only-preview",
+        "name": "Oliver",
+        "email": "oliver@example.com",
+        "source": "demo",
+        "version": 1,
+        "profile": {
+          "plan": null,
+          "mrr": null,
+          "purchase": "Only the fictional events in the timeline are supplied",
+          "onboarding": null,
+          "emailConsent": "allowed"
+        }
+      },
+      "events": [
+        {
+          "id": "oliver-order",
+          "kind": "order_created",
+          "at": "2026-10-08T12:00:00.000Z",
+          "summary": "Oliver placed a fictional order for a water bottle.",
+          "data": {
+            "product": "Water Bottle"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "oliver-cancel",
+          "kind": "order_cancelled",
+          "at": "2026-10-09T09:00:00.000Z",
+          "summary": "Oliver requested cancellation. The specific reason was not supplied.",
+          "data": {
+            "reason": "customer",
+            "products": "Water Bottle"
+          },
+          "synthetic": true
+        }
+      ],
+      "previousOutreach": null
+    },
+    {
+      "id": "harbor",
+      "name": "Noah",
+      "title": "Email permission withdrawn",
+      "story": "Noah has an incomplete checkout, but has opted out of email.",
+      "expected": "internal_review",
+      "expectedLabel": "Internal review only",
+      "reason": "An opportunity to help does not override the customer’s communication preference.",
+      "account": {
+        "id": "read-only-preview:harbor",
+        "workspace": "read-only-preview",
+        "name": "Noah",
+        "email": "noah@example.com",
+        "source": "demo",
+        "version": 1,
+        "profile": {
+          "plan": null,
+          "mrr": null,
+          "purchase": "Only the fictional events in the timeline are supplied",
+          "onboarding": null,
+          "emailConsent": "opted_out"
+        }
+      },
+      "events": [
+        {
+          "id": "noah-checkout",
+          "kind": "checkout_started",
+          "at": "2026-10-09T05:00:00.000Z",
+          "summary": "Noah started checkout for a Weekend Backpack.",
+          "data": {
+            "checkoutId": "synthetic-noah",
+            "product": "Weekend Backpack"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "noah-incomplete",
+          "kind": "checkout_abandoned",
+          "at": "2026-10-09T09:00:00.000Z",
+          "summary": "Fictional checkout for Weekend Backpack remained incomplete after the waiting period. The reason is unknown.",
+          "data": {
+            "checkoutId": "synthetic-noah",
+            "products": "Weekend Backpack",
+            "waitHours": 4,
+            "confidence": "Observed incompletion; cause unknown"
+          },
+          "synthetic": true
+        }
+      ],
+      "previousOutreach": null
+    },
+    {
+      "id": "luma",
+      "name": "Emma",
+      "title": "A message was already sent",
+      "story": "Emma has an incomplete checkout. A previous demo message was simulated one hour ago.",
+      "expected": "no_action",
+      "expectedLabel": "Wait; do not send again",
+      "reason": "The 72-hour contact limit prevents repeated messages. The earlier message is seeded synthetic history.",
+      "account": {
+        "id": "read-only-preview:luma",
+        "workspace": "read-only-preview",
+        "name": "Emma",
+        "email": "emma@example.com",
+        "source": "demo",
+        "version": 1,
+        "profile": {
+          "plan": null,
+          "mrr": null,
+          "purchase": "Only the fictional events in the timeline are supplied",
+          "onboarding": null,
+          "emailConsent": "allowed"
+        }
+      },
+      "events": [
+        {
+          "id": "emma-checkout",
+          "kind": "checkout_started",
+          "at": "2026-10-09T02:00:00.000Z",
+          "summary": "Emma started checkout for Trail Shoes.",
+          "data": {
+            "checkoutId": "synthetic-emma",
+            "product": "Trail Shoes"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "emma-incomplete",
+          "kind": "checkout_abandoned",
+          "at": "2026-10-09T06:00:00.000Z",
+          "summary": "Fictional checkout for Trail Shoes remained incomplete after the waiting period. The reason is unknown.",
+          "data": {
+            "checkoutId": "synthetic-emma",
+            "products": "Trail Shoes",
+            "waitHours": 4,
+            "confidence": "Observed incompletion; cause unknown"
+          },
+          "synthetic": true
+        }
+      ],
+      "previousOutreach": {
+        "status": "simulated",
+        "at": "2026-10-09T11:00:00.000Z",
+        "emailActuallySent": false
+      }
+    },
+    {
+      "id": "northstar",
+      "name": "Northstar",
+      "title": "Integration trouble (SaaS example)",
+      "story": "A fictional SaaS customer had three CRM connection failures, an open support request, and falling usage.",
+      "expected": "troubleshoot",
+      "expectedLabel": "Help restore the integration",
+      "reason": "Help with the observed technical problem. This is a synthetic SaaS example, not a connected Shopify or CRM account.",
+      "account": {
+        "id": "read-only-preview:northstar",
+        "workspace": "read-only-preview",
+        "name": "Northstar",
+        "email": "northstar@example.com",
+        "source": "demo",
+        "version": 1,
+        "profile": {
+          "plan": "Growth (synthetic)",
+          "mrr": 249,
+          "purchase": null,
+          "onboarding": "Completed (synthetic)",
+          "emailConsent": "allowed"
+        }
+      },
+      "events": [
+        {
+          "id": "northstar-fail-1",
+          "kind": "integration_failed",
+          "at": "2026-10-06T12:00:00.000Z",
+          "summary": "CRM connection failed: authentication rejected.",
+          "data": {
+            "error": "authentication_rejected"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "northstar-fail-2",
+          "kind": "integration_failed",
+          "at": "2026-10-07T11:00:00.000Z",
+          "summary": "CRM reconnection failed with the same authentication error.",
+          "data": {},
+          "synthetic": true
+        },
+        {
+          "id": "northstar-fail-3",
+          "kind": "integration_failed",
+          "at": "2026-10-08T11:00:00.000Z",
+          "summary": "Third CRM connection attempt failed.",
+          "data": {},
+          "synthetic": true
+        },
+        {
+          "id": "northstar-support",
+          "kind": "support_open",
+          "at": "2026-10-08T12:00:00.000Z",
+          "summary": "Customer requested help restoring the CRM connection.",
+          "data": {},
+          "synthetic": true
+        },
+        {
+          "id": "northstar-usage",
+          "kind": "usage_drop",
+          "at": "2026-10-09T10:00:00.000Z",
+          "summary": "Weekly active sessions declined from 20 to 6.",
+          "data": {
+            "declinePercent": 70,
+            "previous": 20,
+            "current": 6
+          },
+          "synthetic": true
+        }
+      ],
+      "previousOutreach": null
+    }
+  ]
+}

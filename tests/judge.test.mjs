@@ -45,3 +45,22 @@ test('judge session creation cap prevents unlimited public workspace creation',a
  assert.equal(sessions.filter(r=>r.status==='fulfilled').length,30);
  assert.equal(sessions.filter(r=>r.status==='rejected'&&r.reason.status===429).length,2);
 });
+
+test('judge examples expose realistic shopping sequences and suppress inappropriate outreach',async()=>{
+ const {store}=fixture();const workspace=`judge:${'a'.repeat(64)}`;await store.seed(false,workspace);
+ const expected={checkout:'checkout_recovery',bluepeak:'no_action',meridian:'no_action',pine:'post_cancellation_followup',harbor:'internal_review',luma:'no_action',northstar:'troubleshoot'};
+ for(const [id,action] of Object.entries(expected)){
+  let profile=await store.profile(`${workspace}:${id}`);
+  assert(profile.events.every(event=>event.synthetic===true));
+  assert(profile.account.email.endsWith('@example.com'));
+  profile=await store.analyze(profile.account.id,profile.account.version);
+  assert.equal(profile.decision.diagnosis.action,action,id);
+  if(['no_action','internal_review'].includes(action))assert.equal(profile.decision.diagnosis.message,'');
+ }
+ const shopper=await store.profile(`${workspace}:checkout`);
+ assert.deepEqual(shopper.events.map(event=>event.kind),['product_viewed','product_added_to_cart','checkout_started','checkout_abandoned']);
+ assert.equal(shopper.risk.score,45);
+ const started=shopper.events.find(e=>e.kind==='checkout_started'),abandoned=shopper.events.find(e=>e.kind==='checkout_abandoned');
+ assert.equal((Date.parse(abandoned.at)-Date.parse(started.at))/3600000,4);
+ const completed=await store.profile(`${workspace}:meridian`);assert.equal(completed.risk.score,0);
+});

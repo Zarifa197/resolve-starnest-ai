@@ -9,13 +9,15 @@
 ## A two-minute walkthrough
 
 1. Click **Start judge demo**. This creates a private workspace containing synthetic profiles. Other judges receive separate sessions.
-2. Inspect the checkout customer’s timeline. An unresolved checkout signal contributes to a priority score of 45; this is not a 45% churn probability.
+2. Inspect Ava’s timeline: product viewed → added to cart → checkout started → incomplete checkout. An unresolved checkout signal contributes to a priority score of 45; this is not a 45% churn probability.
 3. Click **Analyze with AI**. Inspect the proposed action, possible cause, uncertainty, cited events, subject, and message. A Gemini engine label indicates an actual model response. A fallback label indicates deterministic rules.
 4. Click **Approve & simulate delivery**. This records a simulated intervention. **No email is sent and no payment is taken.**
 5. Click **Simulate re-engagement**. A synthetic completion event is added and the unresolved-risk score changes to 0. This demonstrates event processing, not a measured commercial recovery.
 6. Reload the page. The recorded timeline should remain within the demo session. Use **Reset demo** to repeat the walkthrough.
 
-For a broader example, select the **Northstar** profile directly from the customer list. It contains synthetic integration failures, falling usage, and a support issue. The appropriate intervention is troubleshooting. The shortcut labelled “Open Northstar demo” opened the checkout profile during local verification; use the customer row instead.
+Use **All customers** to compare seven fictional cases: Ava (incomplete checkout), Leo (browsing only), Maya (purchase completed), Oliver (cancellation), Noah (opt-out), Emma (recent outreach), and Northstar (SaaS integration trouble). The expected response is explained for each case.
+
+**Without a database:** expand **Explore the fictional data** to inspect readable timelines and raw profile/event JSON. Download the complete fictional dataset from the demo page. This read-only preview does not call AI, save actions, or send email. Full English instructions are available at `/guide`.
 
 ## What to look for
 
