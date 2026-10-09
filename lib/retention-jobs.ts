@@ -20,6 +20,9 @@ export async function runRetentionJobs(db:D1Database,shop:string,store:Store,pre
  const policy=await commerceStore(db,clock).settings(shop);
  if(!policy.automatic){await finish('awaiting_approval','Draft prepared; manual approval is enabled.',p.decision!.id);continue;}
  if(p.decision!.diagnosis.engine!=='gemini'){await finish('awaiting_approval','Live Gemini analysis was unavailable. Automatic sending is blocked.',p.decision!.id);continue;}
+ // Confirm that this worker still owns an unexpired merchant lease before sending.
+ const renewed=await db.prepare('UPDATE agent_leases SET expires_at=? WHERE name=? AND owner=? AND expires_at>?').bind(new Date(clock().getTime()+240000).toISOString(),shop,owner,clock().toISOString()).run();
+ if(!renewed.meta.changes){await finish('retry','Worker lease expired before outbound reservation.');continue;}
  // Reserve an irreversible boundary before calling the delivery transport.
  await finish('sending','Reserved outbound attempt. Do not replay automatically.',p.decision!.id);
  const after=await store.execute(p.account.id,p.account.version,'automatic');const action=after.actions.find(a=>a.decisionId===p.decision!.id)!;

@@ -11,7 +11,8 @@ import {productionBlock,safeShopLink} from './merchant-policy';
 import {runRetentionJobs} from './retention-jobs';
 export async function authorizedShop(req:Request){if(localOperator(req))return env.SHOPIFY_SHOP_DOMAIN||null;return env.SESSION_SECRET?merchantSession(req,env.SESSION_SECRET):null;}
 export async function connection(shop:string){
- const db=database(),row=await db.prepare('SELECT * FROM merchant_connections WHERE shop=? AND revoked_at IS NULL').bind(shop).first();
+ const db=database(),row=await db.prepare('SELECT * FROM merchant_connections WHERE shop=?').bind(shop).first();
+ if(row?.revoked_at)throw Error('Shopify connection was revoked. Reconnect before processing.');
  if(row&&env.SESSION_SECRET)return {graphql:shopifyClient(shop,await decryptToken(env.SESSION_SECRET,String(row.token_encrypted))),authenticated:true};
  if(shop!==env.SHOPIFY_SHOP_DOMAIN||!env.SHOPIFY_CLIENT_ID||!env.SHOPIFY_CLIENT_SECRET)throw Error('Shopify authentication is unavailable for this store.');
  const response=await fetch(`https://${shop}/admin/oauth/access_token`,{method:'POST',signal:AbortSignal.timeout(12000),headers:{'Content-Type':'application/json'},body:JSON.stringify({grant_type:'client_credentials',client_id:env.SHOPIFY_CLIENT_ID,client_secret:env.SHOPIFY_CLIENT_SECRET})});
@@ -52,7 +53,10 @@ export function agentRuntime(shop:string){
  const store=retentionStore({db,ai:env.GEMINI_API_KEY?analyzeRetention:undefined,deliver,beforeExecute:preflight});return {store,commerce,preflight};
 }
 export async function agentTick(shop:string){
- const db=database(),runtime=agentRuntime(shop),c=await connection(shop);
+ const db=database(),runtime=agentRuntime(shop);
+ const uninstalled=await db.prepare("SELECT event_id FROM webhook_inbox WHERE shop=? AND topic='app/uninstalled' AND status='pending'").bind(shop).all();
+ if(uninstalled.results.length){await db.prepare('UPDATE merchant_connections SET revoked_at=? WHERE shop=?').bind(new Date().toISOString(),shop).run();await runtime.commerce.saveSettings(shop,{...await runtime.commerce.settings(shop),automatic:false});await db.prepare("UPDATE webhook_inbox SET status='processed' WHERE shop=? AND topic='app/uninstalled' AND status='pending'").bind(shop).run();return {uninstalled:true};}
+ const c=await connection(shop);
  const inbox=await db.prepare("SELECT * FROM webhook_inbox WHERE shop=? AND status='pending' AND attempts<4 ORDER BY created_at LIMIT 10").bind(shop).all();
  for(const row of inbox.results){try{if(row.topic==='app/uninstalled'){await db.prepare('UPDATE merchant_connections SET revoked_at=? WHERE shop=?').bind(new Date().toISOString(),shop).run();await runtime.commerce.saveSettings(shop,{...await runtime.commerce.settings(shop),automatic:false});}else if(String(row.topic).startsWith('customers/')){const result=await c.graphql<{customer:CustomerNode|null}>(`query($id:ID!){customer(id:$id){${CUSTOMER_MINIMAL_FIELDS}}}`,{id:`gid://shopify/Customer/${row.resource_id}`});if(result.customer)await runtime.commerce.customer(shop,result.customer);}else{const result=await c.graphql<{order:OrderNode|null}>(`query($id:ID!){order(id:$id){${ORDER_FIELDS}}}`,{id:`gid://shopify/Order/${row.resource_id}`});if(result.order)await runtime.commerce.order(shop,result.order);}await db.prepare("UPDATE webhook_inbox SET status='processed',detail=NULL WHERE shop=? AND event_id=?").bind(shop,row.event_id).run();}catch(e){await db.prepare('UPDATE webhook_inbox SET attempts=attempts+1,detail=? WHERE shop=? AND event_id=?').bind(e instanceof Error?e.message:'Processing failed',shop,row.event_id).run();}}
  const sync=await runtime.commerce.sync(shop,c.graphql);const detection=await runtime.commerce.detect(shop);const jobs=await runRetentionJobs(db,shop,runtime.store,runtime.preflight);return {sync,detection,jobs};

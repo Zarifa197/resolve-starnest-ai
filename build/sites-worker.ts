@@ -13,7 +13,7 @@ export default {
   },
   async fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext<{ CONNECTORS?: ConnectorBinding }>) {
     const path=new URL(request.url).pathname;
-    const publicRoute=path.startsWith('/auth/shopify/')||path==='/api/pixel'||path==='/api/unsubscribe'||path==='/api/cron'||path.startsWith('/api/webhooks/');
+    const publicRoute=path==='/api/judge'||path.startsWith('/auth/shopify/')||path==='/api/pixel'||path==='/api/unsubscribe'||path==='/api/cron'||path.startsWith('/api/webhooks/');
     if((path.startsWith('/api/')||path.startsWith('/dashboard'))&&!publicRoute&&!localOperator(request)){
       const shop=env.SESSION_SECRET?await merchantSession(request,env.SESSION_SECRET):null;
       if(!shop)return Response.json({error:'Authenticate your Shopify merchant account.'},{status:401});

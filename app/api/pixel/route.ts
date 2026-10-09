@@ -1,0 +1,6 @@
+import {env} from '@resolve/runtime';
+import {verifyProxy} from '@/lib/merchant-auth';
+import {shopDomain} from '@/lib/merchant-policy';
+import {database} from '@/lib/storage';
+import {ingestPixel} from '@/lib/pixel-ingestion';
+export async function POST(req:Request){if(!env.SHOPIFY_CLIENT_SECRET)return new Response('Not configured',{status:503});const params=new URL(req.url).searchParams;if(!await verifyProxy(params,env.SHOPIFY_CLIENT_SECRET))return new Response('Invalid Shopify app proxy signature',{status:401});let shop;try{shop=shopDomain(params.get('shop')||'')}catch{return new Response('Invalid store',{status:400})}const connected=shop===env.SHOPIFY_SHOP_DOMAIN||await database().prepare('SELECT shop FROM merchant_connections WHERE shop=? AND revoked_at IS NULL').bind(shop).first();if(!connected)return new Response('Unconnected merchant',{status:403});const raw=await req.text();if(raw.length>6000)return new Response('Payload too large',{status:413});const id=params.get('logged_in_customer_id')||null;if(id&&!/^\d+$/.test(id))return new Response('Invalid identity',{status:400});try{return Response.json(await ingestPixel(database(),shop,JSON.parse(raw),id));}catch{return new Response('Invalid or unconsented event',{status:400})}}

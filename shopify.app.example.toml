@@ -1,0 +1,19 @@
+# Copy to shopify.app.toml and link it to the existing Resolve app with Shopify CLI.
+# Replace client_id/application_url before deploying. Additional scopes require merchant approval.
+client_id = "YOUR_EXISTING_SHOPIFY_CLIENT_ID"
+name = "Resolve"
+application_url = "https://YOUR_STABLE_APP_HOST"
+embedded = false
+[access_scopes]
+scopes = "read_orders,read_customers,write_pixels,read_customer_events,write_app_proxy"
+[auth]
+redirect_urls = ["https://YOUR_STABLE_APP_HOST/auth/shopify/callback"]
+[app_proxy]
+url = "https://YOUR_STABLE_APP_HOST/api/pixel"
+prefix = "apps"
+subpath = "resolve"
+[webhooks]
+api_version = "2026-10"
+[[webhooks.subscriptions]]
+topics = ["orders/create", "orders/paid", "orders/updated", "orders/cancelled", "orders/fulfilled", "refunds/create", "customers/create", "customers/update", "customers/delete", "app/uninstalled"]
+uri = "/api/webhooks/shopify"

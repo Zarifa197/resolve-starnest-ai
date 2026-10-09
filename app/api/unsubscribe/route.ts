@@ -1,0 +1,6 @@
+import {env} from '@resolve/runtime';
+import {readSigned} from '@/lib/merchant-auth';
+import {database} from '@/lib/storage';
+async function token(req:Request){return env.SESSION_SECRET?readSigned(env.SESSION_SECRET,new URL(req.url).searchParams.get('token')||''):null;}
+export async function GET(req:Request){const t=await token(req);if(!t||Number(t.expires)<Date.now())return new Response('Invalid or expired unsubscribe link',{status:400});return new Response('<!doctype html><html lang="en"><title>Resolve email preferences</title><h1>Unsubscribe from retention emails</h1><form method="post"><button>Unsubscribe</button></form></html>',{headers:{'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':"default-src 'none'; form-action 'self'",'Referrer-Policy':'no-referrer'}})}
+export async function POST(req:Request){const t=await token(req);if(!t||Number(t.expires)<Date.now()||typeof t.shop!=='string'||typeof t.email!=='string')return new Response('Invalid unsubscribe link',{status:400});await database().prepare('INSERT INTO email_suppressions(shop,email,reason,at) VALUES(?,?,?,?) ON CONFLICT(shop,email) DO UPDATE SET reason=excluded.reason,at=excluded.at').bind(t.shop,t.email.toLowerCase(),'unsubscribed',new Date().toISOString()).run();return new Response('You have been unsubscribed from Resolve retention emails.');}

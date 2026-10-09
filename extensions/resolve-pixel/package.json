@@ -1,0 +1,7 @@
+{
+  "name": "resolve-shopping-pixel",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {"@shopify/web-pixels-extension": "2.18.0"}
+}

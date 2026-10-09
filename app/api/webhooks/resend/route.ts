@@ -1,0 +1,4 @@
+import {env} from '@resolve/runtime';
+import {database} from '@/lib/storage';
+import {verifyEmailReceipt,recordEmailReceipt} from '@/lib/email-receipts';
+export async function POST(req:Request){if(!env.RESEND_WEBHOOK_SECRET)return new Response('Configure receipt verification',{status:503});const raw=await req.text();if(raw.length>50000)return new Response('Too large',{status:413});if(!await verifyEmailReceipt(raw,req.headers,env.RESEND_WEBHOOK_SECRET))return new Response('Invalid signature',{status:401});try{const b=JSON.parse(raw);if(typeof b.type!=='string'||typeof b.data?.email_id!=='string'||!Number.isFinite(Date.parse(b.created_at)))return new Response('Invalid receipt',{status:400});return Response.json(await recordEmailReceipt(database(),req.headers.get('svix-id')!,b.type,b.data.email_id,b.created_at));}catch{return new Response('Receipt processing failed',{status:503})}}

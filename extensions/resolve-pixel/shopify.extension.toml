@@ -1,0 +1,17 @@
+name = "Resolve shopping history"
+type = "web_pixel_extension"
+runtime_context = "strict"
+# Shopify CLI generates the extension uid during app deploy/link; do not invent one.
+[customer_privacy]
+analytics = true
+marketing = true
+preferences = false
+sale_of_data = "disabled"
+[settings]
+type = "object"
+[settings.fields.storeOrigin]
+name = "Shopify store origin"
+type = "single_line_text_field"
+[settings.fields.proxyPath]
+name = "Signed app proxy path"
+type = "single_line_text_field"
