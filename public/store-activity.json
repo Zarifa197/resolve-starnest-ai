@@ -1,10 +1,12 @@
 {
   "version": 1,
   "shop": "resolve-test-xsmzpr1z.myshopify.com",
-  "checkedAt": "2026-10-09T22:03:39.895Z",
+  "checkedAt": "2026-10-09T23:22:39.914Z",
   "records": [
     {
       "reference": "#1002",
+      "customerId": "10718960189687",
+      "participantId": "893b88e2-875d-4c1f-bd27-70a83724b8f0",
       "test": true,
       "products": [
         {
@@ -34,6 +36,8 @@
     },
     {
       "reference": "#1001",
+      "customerId": "10717960077559",
+      "participantId": null,
       "test": true,
       "products": [
         {

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "id": "893b88e2-875d-4c1f-bd27-70a83724b8f0",
+  "shop": "resolve-test-xsmzpr1z.myshopify.com",
+  "createdAt": "2026-10-09T23:21:43.878Z",
+  "consent": "Explicit permission for the owner’s own test email",
+  "source": "Actual Resolve database registration",
+  "storage": "Recorded from the local persistent Resolve database",
+  "shopifyCustomerId": "10718960189687",
+  "shopifyMatched": true,
+  "matchedOrders": [
+    "#1002"
+  ],
+  "dissatisfaction": "Not established — no shopper feedback or matched problem evidence yet.",
+  "email": {
+    "purpose": "registration_confirmation",
+    "subject": "Your Resolve test customer profile is ready",
+    "message": "Your real Resolve test customer profile has been registered.\n\nCustomer ID: 893b88e2-875d-4c1f-bd27-70a83724b8f0\n\nUse this same email address at checkout in the Resolve Shopify test store so your test orders can be matched to this profile.\n\nThis confirms registration only. It does not mean browsing or cart tracking is connected, and it is not a recovery email. No dissatisfaction has been recorded.\n\nWorkspace: https://resolve-starnest-ai.vercel.app/demo\n\n— Resolve",
+    "status": "accepted",
+    "createdAt": "2026-10-09T23:21:43.878Z",
+    "checkedAt": "2026-10-09T23:21:45.792Z",
+    "note": "Resend accepted the registration email. Inbox delivery is not yet confirmed."
+  }
+}

@@ -24,3 +24,11 @@ test('saved public records and response belong to observed Shopify orders; accep
  for(const p of previews.responses){const order=records.records.find(r=>r.reference===p.reference);assert(order);assert.equal(p.orderUpdatedAt,order.updatedAt);assert.equal(p.customerSending,false);assert.equal(p.customerConsent,'unknown');assert.equal(p.purpose,'operator_test_preview');assert(p.evidenceKinds.every(k=>order.events.some(e=>e.kind===k)));assert.match(p.delivery.note,/not.*verified/i);}
  assert(!/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(JSON.stringify({records,previews})));
 });
+
+test('an enrolled participant matches only the exact private checkout email without exposing it',()=>{
+ const owner={email:'owner@example.com',id:'c4f0507d-c604-4919-97c0-d73ddf94bab7'};
+ const source={...order,email:' OWNER@example.com ',customer:{id:'gid://shopify/Customer/12345'}};
+ const p=projectStoreActivity([source,{...source,name:'#other',email:'someone@example.com'}],'2026-10-10T00:00:00Z',owner);
+ assert.equal(p.records[0].participantId,owner.id);assert.equal(p.records[0].customerId,'12345');assert.equal(p.records[1].participantId,null);assert(!JSON.stringify(p).includes('@'));
+ assert.equal(projectStoreActivity([source],'2026-10-10T00:00:00Z').records[0].participantId,null);
+});

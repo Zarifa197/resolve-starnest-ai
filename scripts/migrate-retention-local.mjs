@@ -6,5 +6,5 @@ const files=readdirSync(directory).filter(file=>file.endsWith('.sqlite')&&file!=
 if(files.length!==1)throw Error('Expected exactly one local D1 database. Select the database manually before applying this migration.');
 const db=new DatabaseSync(`${directory}/${files[0]}`);
 if(!db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='customers'").get())throw Error('Apply the existing base migrations before the retention migration.');
-for(const name of ['0003_retention_workflow.sql','0004_shopify_agent.sql','0005_judge_sessions.sql','0006_pixel_collectors.sql'])db.exec(readFileSync(new URL('../drizzle/'+name,import.meta.url),'utf8'));db.close();
+for(const name of ['0003_retention_workflow.sql','0004_shopify_agent.sql','0005_judge_sessions.sql','0006_pixel_collectors.sql','0007_test_participant.sql'])db.exec(readFileSync(new URL('../drizzle/'+name,import.meta.url),'utf8'));db.close();
 console.log('Additive retention migration applied. Existing customer and webhook records were preserved.');
