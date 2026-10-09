@@ -12,3 +12,9 @@ export function demoSeed(now=new Date()){
  {account:account('pine','PineWorks'),events:[event('pine-payment','payment_failed',8,'Subscription payment failed with an unspecified processor error.')]}
  ];
 }
+
+export function judgeSeed(workspace:string, now=new Date()) {
+ const rows=demoSeed(now).map(({account,events})=>({account:{...account,id:`${workspace}:${account.id.slice(5)}`,workspace},events}));
+ rows.unshift({account:{id:`${workspace}:checkout`,workspace,name:'Sample shopper',email:'shopper@example.com',source:'demo',version:1,profile:{plan:null,mrr:null,purchase:'Two prior purchases (synthetic)',onboarding:null,emailConsent:'allowed'}},events:[{id:'checkout-abandoned',kind:'checkout_abandoned',at:new Date(now.getTime()-5*3600000).toISOString(),summary:'SYNTHETIC: checkout for Trail Shoes remained incomplete for five hours.',data:{checkoutId:'synthetic-checkout',products:'Trail Shoes',confidence:'Observed incompletion; cause unknown'},synthetic:true}]});
+ return rows;
+}

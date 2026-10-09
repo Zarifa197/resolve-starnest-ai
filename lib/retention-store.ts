@@ -1,5 +1,5 @@
 import {defaultPolicy,evidenceFingerprint,scoreRisk,executionBlock,baselineDiagnosis,validateDiagnosis,eventSchema,activeEvents,type RetentionAccount,type RetentionEvent,type Decision,type Diagnosis,type Intervention,type Audit,type Policy,type RetentionProfile} from './retention-core.ts';
-import {demoSeed} from './retention-seed.ts';
+import {demoSeed,judgeSeed} from './retention-seed.ts';
 export class RetentionError extends Error {status:number;constructor(message:string,status=409){super(message);this.status=status}}
 type Dependencies={db:D1Database;ai?:(profile:RetentionProfile)=>Promise<Diagnosis>;deliver?:(key:string,diagnosis:Diagnosis,profile?:RetentionProfile)=>Promise<string>;beforeExecute?:(profile:RetentionProfile)=>Promise<string|null>;now?:()=>Date};
 export function retentionStore(deps:Dependencies){
@@ -11,15 +11,16 @@ export function retentionStore(deps:Dependencies){
  const rows=await db.prepare('SELECT * FROM customers WHERE company_id=?').bind(company).all();
  if(rows.results.length)await db.batch(rows.results.map(c=>db.prepare('INSERT INTO retention_accounts(id,workspace,name,email,source,profile,version) VALUES(?,?,?,?,?,?,1) ON CONFLICT(id) DO NOTHING').bind(`shopify:${c.id}`,company,`Customer ${String(c.shopify_id).slice(-6)}`,c.email,'shopify',JSON.stringify({plan:null,mrr:null,purchase:null,onboarding:null,emailConsent:'unknown'}))));
  }
- async function seed(reset=false){
- const existing=await db.prepare("SELECT id FROM retention_accounts WHERE workspace='resolve-demo' LIMIT 1").first();if(existing&&!reset)return;
+ async function seed(reset=false,workspace='resolve-demo'){
+ if(workspace!=='resolve-demo'&&!/^judge:[a-f0-9]{64}$/.test(workspace))throw new RetentionError('Invalid demo workspace.',403);
+ const existing=await db.prepare('SELECT id FROM retention_accounts WHERE workspace=? LIMIT 1').bind(workspace).first();if(existing&&!reset)return;
  const statements:D1PreparedStatement[]=[];
- if(reset){for(const table of ['retention_actions','retention_decisions','retention_audit','retention_events'])statements.push(db.prepare(`DELETE FROM ${table} WHERE account_id IN(SELECT id FROM retention_accounts WHERE workspace='resolve-demo')`));statements.push(db.prepare("DELETE FROM retention_accounts WHERE workspace='resolve-demo'"));statements.push(db.prepare("DELETE FROM retention_settings WHERE workspace='resolve-demo'"));}
- for(const {account,events} of demoSeed(now())){
+ if(reset){for(const table of ['retention_actions','retention_decisions','retention_audit','retention_events'])statements.push(db.prepare(`DELETE FROM ${table} WHERE account_id IN(SELECT id FROM retention_accounts WHERE workspace=?)`).bind(workspace));statements.push(db.prepare('DELETE FROM retention_accounts WHERE workspace=?').bind(workspace));statements.push(db.prepare('DELETE FROM retention_settings WHERE workspace=?').bind(workspace));}
+ for(const {account,events} of (workspace==='resolve-demo'?demoSeed(now()):judgeSeed(workspace,now()))){
  statements.push(db.prepare('INSERT OR IGNORE INTO retention_accounts(id,workspace,name,email,source,profile,version) VALUES(?,?,?,?,?,?,?)').bind(account.id,account.workspace,account.name,account.email,account.source,JSON.stringify(account.profile),account.version));
- for(const event of events)statements.push(db.prepare('INSERT OR IGNORE INTO retention_events(id,account_id,body) VALUES(?,?,?)').bind(`demo:${event.id}`,account.id,JSON.stringify({...event,id:`demo:${event.id}`})));
+ for(const event of events)statements.push(db.prepare('INSERT OR IGNORE INTO retention_events(id,account_id,body) VALUES(?,?,?)').bind(`${workspace}:${event.id}`,account.id,JSON.stringify({...event,id:`${workspace}:${event.id}`})));
  statements.push(audit(account.id,'seeded','Explicitly synthetic hackathon scenario loaded. No real customer data was changed.'));
- if(account.id==='demo:luma'){const action:Intervention={id:'demo:luma-prior',accountId:account.id,decisionId:'demo:luma-prior-decision',status:'simulated',mode:'simulation',createdAt:new Date(now().getTime()-3600000).toISOString(),completedAt:new Date(now().getTime()-3600000).toISOString(),providerId:null,approvedBy:'seeded-demo',beforeScore:20,subject:'Help with setup',message:'An earlier support email was simulated for this scenario.',error:null};statements.push(db.prepare('INSERT OR IGNORE INTO retention_actions(id,account_id,decision_id,body) VALUES(?,?,?,?)').bind(action.id,account.id,action.decisionId,JSON.stringify(action)));}
+ if(account.id===`${workspace==='resolve-demo'?'demo':workspace}:luma`){const action:Intervention={id:`${account.id}-prior`,accountId:account.id,decisionId:`${account.id}-prior-decision`,status:'simulated',mode:'simulation',createdAt:new Date(now().getTime()-3600000).toISOString(),completedAt:new Date(now().getTime()-3600000).toISOString(),providerId:null,approvedBy:'seeded-demo',beforeScore:20,subject:'Help with setup',message:'An earlier support email was simulated for this scenario.',error:null};statements.push(db.prepare('INSERT OR IGNORE INTO retention_actions(id,account_id,decision_id,body) VALUES(?,?,?,?)').bind(action.id,account.id,action.decisionId,JSON.stringify(action)));}
  }
  await db.batch(statements);
  }
@@ -79,7 +80,7 @@ export function retentionStore(deps:Dependencies){
  async function reengage(accountId:string,expectedVersion:number){
  const p=await profile(accountId);if(!p.actions.some(a=>['simulated','accepted'].includes(a.status)))throw new RetentionError('Execute an approved intervention before simulating an outcome.');
  const active=activeEvents(p.events),at=now().toISOString();
- const resolutions:Partial<Record<RetentionEvent['kind'],{kind:RetentionEvent['kind'];summary:string;data?:RetentionEvent['data']}>>={integration_failed:{kind:'integration_restored',summary:'SIMULATED: CRM authentication was restored and the connection succeeded.'},support_open:{kind:'support_resolved',summary:'SIMULATED: the open support issue was resolved.'},usage_drop:{kind:'usage_recovered',summary:'SIMULATED: weekly active sessions returned from 6 to 18.',data:{previous:6,current:18}},onboarding_stalled:{kind:'onboarding_completed',summary:'SIMULATED: initial setup was completed.'},payment_failed:{kind:'payment_recovered',summary:'SIMULATED: the payment issue was resolved.'}};
+ const resolutions:Partial<Record<RetentionEvent['kind'],{kind:RetentionEvent['kind'];summary:string;data?:RetentionEvent['data']}>>={integration_failed:{kind:'integration_restored',summary:'SIMULATED: CRM authentication was restored and the connection succeeded.'},support_open:{kind:'support_resolved',summary:'SIMULATED: the open support issue was resolved.'},usage_drop:{kind:'usage_recovered',summary:'SIMULATED: weekly active sessions returned from 6 to 18.',data:{previous:6,current:18}},onboarding_stalled:{kind:'onboarding_completed',summary:'SIMULATED: initial setup was completed.'},payment_failed:{kind:'payment_recovered',summary:'SIMULATED: the payment issue was resolved.'},checkout_abandoned:{kind:'checkout_recovered',summary:'SIMULATED: the shopper completed the checkout. This is not a real purchase.',data:{checkoutId:String(active.find(e=>e.kind==='checkout_abandoned')?.data.checkoutId||'synthetic-checkout')}}};
  const kinds=[...new Set(active.map(e=>e.kind))];const events=kinds.flatMap(kind=>{const r=resolutions[kind];return r?[{id:`${accountId}:reengaged:${r.kind}`,kind:r.kind,at,summary:r.summary,data:r.data||{},synthetic:true}]:[];});
  if(!events.length)throw new RetentionError('No unresolved signal is available for this simulated outcome.');return appendEvents(accountId,expectedVersion,events);
  }

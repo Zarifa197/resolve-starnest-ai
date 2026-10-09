@@ -43,7 +43,7 @@ export function outreachBlock(account:RetentionAccount,actions:Intervention[],no
 export function baselineDiagnosis(account:RetentionAccount,events:RetentionEvent[],actions:Intervention[],now:Date,policy:Policy):Diagnosis{
  const risk=scoreRisk(events),block=outreachBlock(account,actions,now,policy),active=activeEvents(events);let action:Diagnosis['action']='no_action',cause='No unresolved risk signal is available.',uncertainty='Available events do not prove whether this customer will leave.',explanation='Monitor new activity instead of contacting a customer without a supported reason.',subject='',message='';
  if(block){action=account.profile.emailConsent==='opted_out'?'internal_review':'no_action';cause=block;explanation='Outreach is suppressed by communication policy.';}
- else if(account.source==='shopify'){
+ else if(account.source==='shopify'||active.some(e=>['checkout_abandoned','cart_abandoned','customer_inactive'].includes(e.kind))){
  const checkout=active.findLast(e=>e.kind==='checkout_abandoned'),cart=active.findLast(e=>e.kind==='cart_abandoned'),inactive=active.findLast(e=>e.kind==='customer_inactive'),cancelled=active.findLast(e=>e.kind==='order_cancelled'&&e.data.reason==='customer');
  action=checkout?'checkout_recovery':cart?'cart_recovery':cancelled?'post_cancellation_followup':inactive?'reengagement':'no_action';
  if(policy.merchant&&!policy.merchant.allowed.includes(action as import('./merchant-policy.ts').MerchantPolicy['allowed'][number]))action='no_action';
