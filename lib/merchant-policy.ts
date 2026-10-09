@@ -1,0 +1,13 @@
+import {z} from 'zod';
+export const merchantPolicySchema=z.object({
+ brandName:z.string().trim().min(1).max(100).default('Resolve'),senderName:z.string().trim().min(1).max(100).default('Resolve'),brandVoice:z.string().trim().min(1).max(600).default('Warm, concise and helpful. No pressure or discounts.'),language:z.literal('English').default('English'),replyTo:z.string().email().or(z.literal('')).default(''),senderEmail:z.string().email().or(z.literal('')).default(''),postalAddress:z.string().trim().max(300).default(''),
+ allowed:z.array(z.enum(['checkout_recovery','cart_recovery','post_cancellation_followup','reengagement'])).max(4).default(['checkout_recovery','post_cancellation_followup','reengagement']),cooldownHours:z.number().int().min(24).max(720).default(72),checkoutWaitHours:z.number().int().min(1).max(168).default(4),cartWaitHours:z.number().int().min(4).max(168).default(24),inactivityMultiplier:z.number().min(2).max(5).default(2),minimumInactiveDays:z.number().int().min(30).max(365).default(45),
+ automatic:z.boolean().default(false),mode:z.enum(['simulation','test_email','customer_email']).default('simulation'),legalEligible:z.boolean().default(false),otherRecoveryAutomation:z.boolean().default(true)
+}).strict();
+export type MerchantPolicy=z.infer<typeof merchantPolicySchema>;
+export const defaultMerchantPolicy=merchantPolicySchema.parse({});
+export function shopDomain(input:string){if(!/^[a-z0-9][a-z0-9-]*\.myshopify\.com$/.test(input))throw Error('Invalid Shopify domain.');return input;}
+export function safeShopLink(value:string,shop:string,customDomain?:string|null){try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password&&[shop,customDomain].includes(u.hostname)?u.href:null}catch{return null}}
+export function marketingConsent(state:string|undefined){return state==='SUBSCRIBED'?'allowed':state==='UNSUBSCRIBED'?'opted_out':'unknown';}
+export function cancellationEligible(reason:string|undefined){return reason==='customer'||reason==='CUSTOMER';}
+export function productionBlock(p:MerchantPolicy,ready:{authenticated:boolean;domainVerified:boolean;provider:boolean;publicUrl:boolean}){if(!ready.authenticated)return 'Connect Shopify with authenticated merchant access.';if(!ready.publicUrl)return 'A stable HTTPS app URL is required.';if(!ready.provider)return 'Email provider is not configured.';if(!ready.domainVerified)return 'The sender domain has not been verified by Resend.';if(!p.replyTo||!p.postalAddress)return 'Reply-to and merchant postal address are required.';if(!p.legalEligible)return 'Merchant messaging eligibility has not been confirmed.';return null;}

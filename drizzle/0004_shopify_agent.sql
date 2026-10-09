@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS merchant_connections (shop TEXT PRIMARY KEY, token TEXT NOT NULL, scopes TEXT NOT NULL, installed_at TEXT NOT NULL, revoked_at TEXT);
+CREATE TABLE IF NOT EXISTS merchant_settings (shop TEXT PRIMARY KEY, body TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS commerce_snapshots (shop TEXT NOT NULL, kind TEXT NOT NULL, resource_id TEXT NOT NULL, customer_id TEXT, body TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY(shop,kind,resource_id));
+CREATE INDEX IF NOT EXISTS commerce_customer ON commerce_snapshots(shop,customer_id,kind);
+CREATE TABLE IF NOT EXISTS sync_checkpoints (shop TEXT NOT NULL, kind TEXT NOT NULL, cursor TEXT, since TEXT, cycle_started TEXT, last_success TEXT, error TEXT, PRIMARY KEY(shop,kind));
+CREATE TABLE IF NOT EXISTS shopping_events (shop TEXT NOT NULL, event_id TEXT NOT NULL, customer_id TEXT, client_id TEXT, kind TEXT NOT NULL, occurred_at TEXT NOT NULL, source TEXT NOT NULL, identity_basis TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(shop,event_id));
+CREATE INDEX IF NOT EXISTS shopping_timeline ON shopping_events(shop,customer_id,occurred_at);
+CREATE TABLE IF NOT EXISTS retention_jobs (id TEXT PRIMARY KEY, shop TEXT NOT NULL, account_id TEXT NOT NULL, trigger_id TEXT NOT NULL, trigger_kind TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', due_at TEXT NOT NULL, lease_until TEXT, lease_token TEXT, attempts INTEGER NOT NULL DEFAULT 0, decision_id TEXT, detail TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, UNIQUE(shop,trigger_id));
+CREATE INDEX IF NOT EXISTS retention_jobs_due ON retention_jobs(shop,status,due_at);
+CREATE TABLE IF NOT EXISTS email_suppressions (shop TEXT NOT NULL, email TEXT NOT NULL, reason TEXT NOT NULL, at TEXT NOT NULL, PRIMARY KEY(shop,email));
+CREATE TABLE IF NOT EXISTS email_receipts (event_id TEXT PRIMARY KEY, provider_id TEXT NOT NULL, kind TEXT NOT NULL, at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS retention_outcomes (shop TEXT NOT NULL, action_id TEXT NOT NULL, order_id TEXT NOT NULL, at TEXT NOT NULL, detail TEXT NOT NULL, PRIMARY KEY(shop,action_id,order_id));
+CREATE TABLE IF NOT EXISTS agent_leases (name TEXT PRIMARY KEY, owner TEXT NOT NULL, expires_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS webhook_inbox (shop TEXT NOT NULL, event_id TEXT NOT NULL, topic TEXT NOT NULL, resource_id TEXT, status TEXT NOT NULL DEFAULT 'pending', attempts INTEGER NOT NULL DEFAULT 0, detail TEXT, created_at TEXT NOT NULL, PRIMARY KEY(shop,event_id));
