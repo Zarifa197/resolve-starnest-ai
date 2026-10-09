@@ -1,21 +1,14 @@
 # Resolve
 
-## Judge demo: open and scroll
+## Customer activity workspace
 
-**[Read the prepared demo](https://resolve-starnest-ai.vercel.app/demo)** — no account, password, payment, or setup. Judges can immediately compare browsing without purchase, an abandoned cart, and a customer-requested cancellation. Each includes the timeline, response rationale and uncertainty, complete email, and restricted test preview status. Expand a log to inspect its JSON.
+[Open Resolve](https://resolve-starnest-ai.vercel.app/demo). The workspace shares the landing page’s logo, navigation, typography, colors and theme controls. It shows actual Shopify test orders instead of the earlier fictional shopping journeys. The saved snapshot contains two test orders, six observed events, and a recorded Gemini operator-preview message based on the actual cancellation. Resend accepted that operator preview; inbox delivery is not independently verified.
 
-The behavior is **synthetic**. Recorded Gemini drafts and Resend test-preview acceptance are labelled separately; acceptance is not verified inbox delivery, and these previews were not triggered by real storefront behavior. The default page is read-only and needs no database. The original interactive sandbox is now `/demo/ai` and still requires hosted storage. See [JUDGE_GUIDE.md](JUDGE_GUIDE.md) for copy-and-paste submission instructions and [the evidence snapshot](public/submission-evidence.json) for the source data.
+A server-side reader can refresh test orders every 30 seconds without a database. It uses the existing `SHOPIFY_SHOP_DOMAIN`, `SHOPIFY_CLIENT_ID`, and `SHOPIFY_CLIENT_SECRET` values, is restricted to the authorized Resolve test store, and projects only non-identifying test-order fields. When the connection is absent or fails, the UI identifies its saved snapshot as **recorded**, never live. Names, contact details, addresses, access tokens, checkout URLs and private provider receipts are excluded.
 
+Product browsing and cart capture are **not connected to this public workspace**, and automatic customer email is **off**. A draft and a test-preview acceptance are not proof of automatic customer delivery. See [the connection guide](https://resolve-starnest-ai.vercel.app/guide). Refresh the saved source with `node --experimental-strip-types scripts/refresh-store-activity.mjs`; the operator preview script is an explicit send operation, not part of page loading.
 
-**Understand the customer’s situation before choosing a retention action.**
-
-Resolve is an AI-assisted retention workspace for online businesses. It brings customer events into a timeline, explains unresolved risk signals, and recommends an intervention grounded in those events. Shopify is the first connected commerce platform. Broader SaaS examples demonstrate the intended direction using synthetic data.
-
-An incomplete checkout can warrant checkout help; repeated integration failures can warrant troubleshooting. A customer-requested cancellation does not prove dissatisfaction, and browsing alone does not justify outreach. Resolve can recommend **no action** when contact would be inappropriate.
-
-[Website](https://resolve-starnest-ai.vercel.app/) · [Judge demo](https://resolve-starnest-ai.vercel.app/demo) · [Judge instructions](JUDGE_GUIDE.md) · [Shopify tracking setup](SHOPIFY_TRACKING.md) · [Submission audit](SUBMISSION_AUDIT.md) · [Development provenance](PROVENANCE.md)
-
-> **Public deployment status — October 9, 2026, 19:32 Baku:** the landing and demo pages load, but starting the hosted demo returns “Storage is temporarily unavailable.” The public end-to-end demo is blocked until managed database access is repaired. The working local demonstration and external API checks below are separate evidence; they do not establish a working hosted workflow.
+The older synthetic evidence files are retained as labelled historical test fixtures; they are not rendered by the current workspace. The historical audit below describes earlier runs, not the current live connection state.
 
 ## The problem and the approach
 
@@ -29,33 +22,33 @@ Businesses often see isolated signals: a failed payment, an incomplete checkout,
 
 The score is a **priority heuristic, not a churn probability**. A later purchase is an observed outcome, not proof that Resolve caused it.
 
-## What is actually verified
+## Earlier verification and current limits
 
 These results were recorded on October 9, 2026. “Local” means the application ran on the development machine; “external” means an actual provider API was used.
 
 | Capability | Evidence and current limit |
 | --- | --- |
 | Public website | Vercel landing page and `/demo` returned HTTP 200. Landing scenario and pause/resume controls worked. |
-| Prepared judge walkthrough | `/demo` now renders a saved, read-only walkthrough without hosted storage. Three fictional journeys, recorded Gemini drafts, and real Resend test-preview acceptance are inspectable. |
+| Current activity workspace | Actual Shopify test orders and a recorded operator-preview response replace the earlier synthetic default. Live order reads are tested locally; hosted status must be checked through the connection badge. |
 | Optional interactive sandbox | `/demo/ai` still uses `/api/judge`; the October 9 public audit returned HTTP 503. This storage-dependent workflow remains unverified on the hosted app. |
 | Merchant access gates | Public `/dashboard`, `/api/agent`, and `/api/retention` returned HTTP 401 without authentication. This is a smoke check, not a complete security audit. |
 | Shopify synchronization | Actual authorized development store: **5 customers, 2 orders, 0 abandoned checkouts** synchronized through the local application. Live abandoned-checkout recovery is not proved. |
 | Gemini analysis | Actual `gemini-3.5-flash-lite` API: **5 of 6 synthetic evaluation contexts produced validated results**; the sixth was rejected for conflicting with communication policy. |
 | Local judge journey | Real Gemini analysis, recorded approval, simulated delivery, simulated re-engagement, and history surviving reload. The checkout example’s score changed **45 → 0** after a synthetic completion event. |
-| Automated verification | **54 test entries passed; 0 failed; 0 skipped** in the latest local pass. Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
+| Automated verification | **58 test entries passed; 0 failed; 0 skipped** in the latest local pass. Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
 | Real customer email and revenue | **Not verified.** No live customer retention result or inbox delivery is claimed. |
 
 The six-context Gemini evaluation measures category agreement and evidence references. The rule baseline selected the expected categories in all six contexts. This small evaluation does **not** establish superior AI accuracy, churn prediction, commercial uplift, or complete factual correctness of every generated sentence.
 
 See [the submission audit](SUBMISSION_AUDIT.md) and [preserved verification evidence](hackathon-evidence/submission/) for timestamps, results, and remaining blockers.
 
-## Try it as a judge
+## Open the workspace
 
-Open [the prepared walkthrough](https://resolve-starnest-ai.vercel.app/demo) and scroll. **No account, password, Shopify login, payment, or setup is required.** Three fictional shopping journeys are already populated: browsing without purchase, an unfinished cart, and a customer-requested cancellation. Each shows a timeline, a recorded Gemini explanation with uncertainty, the complete email, and its restricted test-preview acceptance status. Raw logs can be expanded or downloaded.
+Open [Customer activity](https://resolve-starnest-ai.vercel.app/demo) and scroll. No account or password is required. The source records are actual Shopify test orders, not invented browsing/cart sequences. A source log can be expanded. The cancellation has a recorded Gemini operator-preview message; acceptance by Resend is separate from confirmed inbox delivery and does not enable customer sending.
 
-The three previews were accepted by Resend for the configured operator inbox. Inbox delivery has not been independently verified. This is not evidence that the fictional events occurred in Shopify or that automatic customer delivery is active.
+The status badge distinguishes recorded snapshots from successful live reads. When server-side Shopify credentials are configured, the page refreshes current test orders every 30 seconds. Without that connection, it preserves the timestamped saved records and clearly labels them as recorded. Detailed setup is in [the connection guide](https://resolve-starnest-ai.vercel.app/guide).
 
-The original interactive sandbox is available separately at `/demo/ai`. With hosted storage configured, it supports a private synthetic session, AI analysis, simulated approval/delivery, simulated re-engagement, and history. Its provider fallback is labelled. It is optional; judges can assess the default walkthrough without it. See [JUDGE_GUIDE.md](JUDGE_GUIDE.md).
+The optional `/demo/ai` sandbox is a separate synthetic test fixture with storage-dependent analysis and simulated outcomes. It is not the current activity workspace.
 
 ## Inspect the fictional data
 
