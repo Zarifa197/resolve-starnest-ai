@@ -1,0 +1,219 @@
+{
+  "version": 1,
+  "synthetic": true,
+  "generatedAt": "2026-10-09T21:03:43.411Z",
+  "scenarioClock": "Fixed fictional October 9, 2026 UTC; abandonment waits are compressed for explanation.",
+  "note": "A recorded demonstration of three different responses. These are not real Shopify behavior receipts. AI generation and test email acceptance, when recorded, are separate from the synthetic shopping scenarios.",
+  "scenarios": [
+    {
+      "id": "browse",
+      "label": "Browsed, then left",
+      "product": "Trail Shoes",
+      "price": 128,
+      "trigger": "browse_abandoned",
+      "signal": "Viewed a product twice and left without adding anything to the cart.",
+      "events": [
+        {
+          "id": "browse-1",
+          "kind": "product_viewed",
+          "at": "2026-10-09T12:00:00.000Z",
+          "summary": "Viewed Trail Shoes",
+          "data": {
+            "product": "Trail Shoes"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "browse-2",
+          "kind": "product_viewed",
+          "at": "2026-10-09T12:02:00.000Z",
+          "summary": "Returned to the product page",
+          "data": {
+            "product": "Trail Shoes"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "browse-3",
+          "kind": "browse_abandoned",
+          "at": "2026-10-09T12:05:00.000Z",
+          "summary": "Demo idle timer elapsed; no cart or purchase in this scenario",
+          "data": {
+            "cartItems": 0,
+            "purchaseObserved": false,
+            "waitingPeriodCompressed": true
+          },
+          "synthetic": true
+        }
+      ],
+      "analysis": {
+        "action": "browsing_followup",
+        "cause": "The user viewed the Trail Shoes product page multiple times before leaving the site.",
+        "uncertainty": "It is uncertain whether the user is still deciding on sizing, comparing options, or simply finished browsing for now.",
+        "explanation": "This draft provides optional product help without assuming any dissatisfaction or pushing a purchase.",
+        "evidenceIds": [
+          "browse-1",
+          "browse-2",
+          "browse-3"
+        ],
+        "subject": "Questions about the Trail Shoes?",
+        "message": "Hi there,\n\nWe noticed you were checking out the Trail Shoes recently. If you have any questions about fit or features, we are here to help.\n\nThe Resolve demo team",
+        "allowedAction": "browsing_followup",
+        "engine": "gemini",
+        "model": "gemini-3.5-flash-lite",
+        "generatedAt": "2026-10-09T21:03:33.367Z"
+      },
+      "delivery": {
+        "status": "accepted",
+        "checkedAt": "2026-10-09T21:03:38.829Z",
+        "mode": "restricted_test_email",
+        "note": "Resend accepted this synthetic-scenario preview for the configured operator test inbox. Inbox delivery has not been verified."
+      },
+      "permission": {
+        "identity": "fictional signed-in shopper",
+        "emailConsent": "allowed_in_synthetic_example",
+        "browsingPolicy": "opt_in_example_only"
+      }
+    },
+    {
+      "id": "cart",
+      "label": "Added to cart, then left",
+      "product": "Everyday Backpack",
+      "price": 84,
+      "trigger": "cart_abandoned",
+      "signal": "Added a backpack to the cart, then left without completing checkout.",
+      "events": [
+        {
+          "id": "cart-1",
+          "kind": "product_viewed",
+          "at": "2026-10-09T13:00:00.000Z",
+          "summary": "Viewed Everyday Backpack",
+          "data": {
+            "product": "Everyday Backpack"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "cart-2",
+          "kind": "product_added_to_cart",
+          "at": "2026-10-09T13:01:00.000Z",
+          "summary": "Added one backpack to the cart",
+          "data": {
+            "product": "Everyday Backpack",
+            "quantity": 1
+          },
+          "synthetic": true
+        },
+        {
+          "id": "cart-3",
+          "kind": "cart_abandoned",
+          "at": "2026-10-09T13:05:00.000Z",
+          "summary": "Demo idle timer elapsed; cart still contains one item",
+          "data": {
+            "cartItems": 1,
+            "checkoutCompleted": false,
+            "waitingPeriodCompressed": true
+          },
+          "synthetic": true
+        }
+      ],
+      "analysis": {
+        "action": "cart_recovery",
+        "cause": "The user added an Everyday Backpack to their cart but left the site without completing checkout.",
+        "uncertainty": "It is unknown why the checkout was left unfinished, whether due to distraction or needing more time.",
+        "explanation": "This draft offers gentle cart help and an invitation to continue when ready.",
+        "evidenceIds": [
+          "cart-1",
+          "cart-2",
+          "cart-3"
+        ],
+        "subject": "Your Everyday Backpack is still saved",
+        "message": "Hi there,\n\nWe saw that you left the Everyday Backpack in your cart. Let us know if you need any assistance completing your order.\n\nThe Resolve demo team",
+        "allowedAction": "cart_recovery",
+        "engine": "gemini",
+        "model": "gemini-3.5-flash-lite",
+        "generatedAt": "2026-10-09T21:03:33.368Z"
+      },
+      "delivery": {
+        "status": "accepted",
+        "checkedAt": "2026-10-09T21:03:41.942Z",
+        "mode": "restricted_test_email",
+        "note": "Resend accepted this synthetic-scenario preview for the configured operator test inbox. Inbox delivery has not been verified."
+      },
+      "permission": {
+        "identity": "fictional signed-in shopper",
+        "emailConsent": "allowed_in_synthetic_example",
+        "browsingPolicy": "not_applicable"
+      }
+    },
+    {
+      "id": "cancel",
+      "label": "Paid, then cancelled",
+      "product": "Insulated Water Bottle",
+      "price": 32,
+      "trigger": "order_cancelled",
+      "signal": "Placed a paid test order, then cancelled it with the customer-requested reason.",
+      "events": [
+        {
+          "id": "cancel-1",
+          "kind": "order_created",
+          "at": "2026-10-09T14:00:00.000Z",
+          "summary": "Created a fictional order for one water bottle",
+          "data": {
+            "product": "Insulated Water Bottle",
+            "amount": 32
+          },
+          "synthetic": true
+        },
+        {
+          "id": "cancel-2",
+          "kind": "order_paid",
+          "at": "2026-10-09T14:01:00.000Z",
+          "summary": "Demo test payment approved; no real charge",
+          "data": {
+            "gateway": "simulated_test_gateway"
+          },
+          "synthetic": true
+        },
+        {
+          "id": "cancel-3",
+          "kind": "order_cancelled",
+          "at": "2026-10-09T14:03:00.000Z",
+          "summary": "Customer requested cancellation",
+          "data": {
+            "reason": "customer"
+          },
+          "synthetic": true
+        }
+      ],
+      "analysis": {
+        "action": "post_cancellation_followup",
+        "cause": "The user placed an order for an Insulated Water Bottle and subsequently requested a cancellation.",
+        "uncertainty": "The specific reason for the cancellation is not detailed beyond the customer's request.",
+        "explanation": "This draft respectfully acknowledges the cancellation and offers general support without claiming any completed refund or repair actions.",
+        "evidenceIds": [
+          "cancel-1",
+          "cancel-2",
+          "cancel-3"
+        ],
+        "subject": "Support regarding your Insulated Water Bottle order",
+        "message": "Hi there,\n\nWe have noted the cancellation of your Insulated Water Bottle order. Please reach out if you have any questions or need further support.\n\nThe Resolve demo team",
+        "allowedAction": "post_cancellation_followup",
+        "engine": "gemini",
+        "model": "gemini-3.5-flash-lite",
+        "generatedAt": "2026-10-09T21:03:33.368Z"
+      },
+      "delivery": {
+        "status": "accepted",
+        "checkedAt": "2026-10-09T21:03:43.410Z",
+        "mode": "restricted_test_email",
+        "note": "Resend accepted this synthetic-scenario preview for the configured operator test inbox. Inbox delivery has not been verified."
+      },
+      "permission": {
+        "identity": "fictional signed-in shopper",
+        "emailConsent": "allowed_in_synthetic_example",
+        "browsingPolicy": "not_applicable"
+      }
+    }
+  ]
+}

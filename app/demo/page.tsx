@@ -1,3 +1,3 @@
-import Retention from '@/components/resolve/retention';
-import Link from 'next/link';
-export default function JudgeDemo(){return <main style={{maxWidth:1440,margin:'auto',padding:'24px clamp(16px,4vw,56px)'}}><nav style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap',gap:16,marginBottom:24}}><Link href="/" style={{fontWeight:700}}>resolve.</Link><Link href="/guide" style={{fontSize:13,color:"#5745dc"}}>Demo & Shopify instructions</Link><span style={{fontSize:13,color:'#63617a'}}>Private demo session · synthetic data · no email sent</span></nav><Retention judge/></main>}
+import SubmissionWalkthrough from '@/components/resolve/submission-walkthrough';
+export const metadata={title:'Resolve — Three shopping journeys, three helpful messages',description:'A read-only judge walkthrough of browsing, abandoned-cart and customer-cancellation examples. Inspect the events, decisions, email content and test preview status.'};
+export default function JudgeDemo(){return <SubmissionWalkthrough/>}
