@@ -219,3 +219,9 @@ Codex assisted implementation and verification. The project reuses a Sites/Vinex
 Commit timestamps alone do not establish when every feature was built. Consult [PROVENANCE.md](PROVENANCE.md) and the organizers’ rules before declaring eligibility. Earlier [HACKATHON.md](HACKATHON.md) and [IMPLEMENTATION.md](IMPLEMENTATION.md) preserve historical states; use the dated submission audit for this verification pass.
 
 This README makes the project understandable and reproducible for human judges and automated screening. Passing an unspecified screening rubric is not guaranteed; documentation does not substitute for required submission fields, disclosures, or a functioning demo.
+
+### Real owner trial enrollment
+
+The workspace includes an explicitly enrolled owner test participant, persisted locally in `test_participants`, with the registration email reservation and acceptance stored in `test_participant_messages`. The owner’s existing #1002 test purchase was matched by its exact checkout email; #1001 belongs to another customer and is not attributed to the owner. The public projection exposes IDs, the registration message and status, while withholding email and provider identifiers. This is recorded local database evidence, not a live Vercel database or an automatic recovery-email claim.
+
+`node scripts/register-test-participant.mjs` registers the configured `EMAIL_TEST_TO` address and sends at most one registration confirmation. Re-running reconciles available provider receipts without resending. Then `node --experimental-strip-types scripts/refresh-store-activity.mjs` reads actual Shopify orders. `EMAIL_TEST_TO` is required server-side on Vercel to match new test orders to this enrolled participant; it must never be public.
