@@ -1,5 +1,12 @@
 # Resolve
 
+## Judge demo: open and scroll
+
+**[Read the prepared demo](https://resolve-starnest-ai.vercel.app/demo)** — no account, password, payment, or setup. Judges can immediately compare browsing without purchase, an abandoned cart, and a customer-requested cancellation. Each includes the timeline, response rationale and uncertainty, complete email, and restricted test preview status. Expand a log to inspect its JSON.
+
+The behavior is **synthetic**. Recorded Gemini drafts and Resend test-preview acceptance are labelled separately; acceptance is not verified inbox delivery, and these previews were not triggered by real storefront behavior. The default page is read-only and needs no database. The original interactive sandbox is now `/demo/ai` and still requires hosted storage. See [JUDGE_GUIDE.md](JUDGE_GUIDE.md) for copy-and-paste submission instructions and [the evidence snapshot](public/submission-evidence.json) for the source data.
+
+
 **Understand the customer’s situation before choosing a retention action.**
 
 Resolve is an AI-assisted retention workspace for online businesses. It brings customer events into a timeline, explains unresolved risk signals, and recommends an intervention grounded in those events. Shopify is the first connected commerce platform. Broader SaaS examples demonstrate the intended direction using synthetic data.
@@ -18,7 +25,7 @@ Businesses often see isolated signals: a failed payment, an incomplete checkout,
 2. **Understand:** assemble the timeline and calculate a transparent priority score from unresolved events.
 3. **Recommend:** ask Gemini for a possible cause, uncertainty, evidence references, an action category, and a message draft.
 4. **Check:** validate the response and enforce communication permissions, merchant policy, cooldowns, and execution guards.
-5. **Act and observe:** record the intervention and later events. The judge demo simulates delivery and re-engagement; production email requires additional configuration and verification.
+5. **Act and observe:** record the intervention and later events. The prepared judge walkthrough shows recorded test previews; the optional interactive sandbox simulates delivery and re-engagement. Production customer email requires additional configuration and verification.
 
 The score is a **priority heuristic, not a churn probability**. A later purchase is an observed outcome, not proof that Resolve caused it.
 
@@ -29,12 +36,13 @@ These results were recorded on October 9, 2026. “Local” means the applicatio
 | Capability | Evidence and current limit |
 | --- | --- |
 | Public website | Vercel landing page and `/demo` returned HTTP 200. Landing scenario and pause/resume controls worked. |
-| Public judge workflow | **Blocked:** `/api/judge` returned HTTP 503, and Start judge demo displayed a storage error. |
+| Prepared judge walkthrough | `/demo` now renders a saved, read-only walkthrough without hosted storage. Three fictional journeys, recorded Gemini drafts, and real Resend test-preview acceptance are inspectable. |
+| Optional interactive sandbox | `/demo/ai` still uses `/api/judge`; the October 9 public audit returned HTTP 503. This storage-dependent workflow remains unverified on the hosted app. |
 | Merchant access gates | Public `/dashboard`, `/api/agent`, and `/api/retention` returned HTTP 401 without authentication. This is a smoke check, not a complete security audit. |
 | Shopify synchronization | Actual authorized development store: **5 customers, 2 orders, 0 abandoned checkouts** synchronized through the local application. Live abandoned-checkout recovery is not proved. |
 | Gemini analysis | Actual `gemini-3.5-flash-lite` API: **5 of 6 synthetic evaluation contexts produced validated results**; the sixth was rejected for conflicting with communication policy. |
 | Local judge journey | Real Gemini analysis, recorded approval, simulated delivery, simulated re-engagement, and history surviving reload. The checkout example’s score changed **45 → 0** after a synthetic completion event. |
-| Automated verification | **51 test entries passed; 0 failed; 0 skipped** in the latest local pass. Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
+| Automated verification | **54 test entries passed; 0 failed; 0 skipped** in the latest local pass. Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
 | Real customer email and revenue | **Not verified.** No live customer retention result or inbox delivery is claimed. |
 
 The six-context Gemini evaluation measures category agreement and evidence references. The rule baseline selected the expected categories in all six contexts. This small evaluation does **not** establish superior AI accuracy, churn prediction, commercial uplift, or complete factual correctness of every generated sentence.
@@ -43,22 +51,15 @@ See [the submission audit](SUBMISSION_AUDIT.md) and [preserved verification evid
 
 ## Try it as a judge
 
-The judge route is separate from merchant administration. **No account, password, Shopify login, or payment is required.** Starting a demo creates an isolated, temporary workspace with synthetic customer profiles. Judges should not receive the founder’s merchant credentials.
+Open [the prepared walkthrough](https://resolve-starnest-ai.vercel.app/demo) and scroll. **No account, password, Shopify login, payment, or setup is required.** Three fictional shopping journeys are already populated: browsing without purchase, an unfinished cart, and a customer-requested cancellation. Each shows a timeline, a recorded Gemini explanation with uncertainty, the complete email, and its restricted test-preview acceptance status. Raw logs can be expanded or downloaded.
 
-Once storage is operational:
+The three previews were accepted by Resend for the configured operator inbox. Inbox delivery has not been independently verified. This is not evidence that the fictional events occurred in Shopify or that automatic customer delivery is active.
 
-1. Open `/demo` and click **Start judge demo**.
-2. Inspect Ava’s four-step shopping timeline and score.
-3. Click **Analyze with AI** and read the explanation, uncertainty, evidence, and message draft.
-4. Click **Approve & simulate delivery**. This records a simulation and sends no email.
-5. Click **Simulate re-engagement** and inspect the new outcome event and revised score.
-6. Reload to confirm history persists. Use **Reset demo** to restart.
-
-Sessions expire after one hour. Without a server-side Gemini key, the interface identifies the deterministic fallback; fallback output is not presented as a live model response. Follow [JUDGE_GUIDE.md](JUDGE_GUIDE.md) for the full walkthrough and current public availability.
+The original interactive sandbox is available separately at `/demo/ai`. With hosted storage configured, it supports a private synthetic session, AI analysis, simulated approval/delivery, simulated re-engagement, and history. Its provider fallback is labelled. It is optional; judges can assess the default walkthrough without it. See [JUDGE_GUIDE.md](JUDGE_GUIDE.md).
 
 ## Inspect the fictional data
 
-`/demo` includes a read-only preview that works even when persistent storage is unavailable. Every case shows a plain-language story, expected response, consent status, UTC timeline, and expandable profile/event JSON. Download [the complete dataset](public/demo-data.json); it contains only fictional people and `example.com` email addresses.
+The optional `/demo/ai` sandbox includes seven additional fictional cases. Every case shows a plain-language story, expected response, consent status, UTC timeline, and expandable profile/event JSON. Download [the complete dataset](public/demo-data.json); it contains only fictional people and `example.com` email addresses.
 
 | Fictional case | What happened | Expected response |
 | --- | --- | --- |
@@ -170,7 +171,7 @@ Save these variables in **Vercel → Project → Environment Variables → Produ
 | `CLOUDFLARE_D1_TOKEN` | Persistent judge demo | Account-scoped D1 API credential. |
 | `GEMINI_API_KEY` | Actual AI analysis | Server-side Gemini key; otherwise use the labelled fallback. |
 
-After updating runtime variables, redeploy and test `/demo` in a fresh browser session. The current 503 can result from absent/invalid database configuration, inaccessible D1, or unapplied schema. Its exact cause requires server logs; the public error alone does not identify it.
+After updating runtime variables, redeploy and test `/demo/ai` in a fresh browser session. The current 503 can result from absent/invalid database configuration, inaccessible D1, or unapplied schema. Its exact cause requires server logs; the public error alone does not identify it.
 
 Merchant workflows additionally use `PUBLIC_APP_URL`, `SESSION_SECRET`, `SHOPIFY_CLIENT_ID`, `SHOPIFY_CLIENT_SECRET`, `SHOPIFY_SHOP_DOMAIN`, and `CRON_SECRET`. Restricted email testing uses `RESEND_API_KEY` and `EMAIL_TEST_TO`; receipt verification uses `RESEND_WEBHOOK_SECRET`. See [DEPLOYMENT.md](DEPLOYMENT.md) and the environment declarations before enabling optional integrations.
 
@@ -210,7 +211,7 @@ The model evaluation script is `scripts/evaluate-gemini.mjs`. It calls the actua
 - The hosted judge workflow needs storage repair and a complete public retest.
 - Shopify browsing capture is experimental and **not verified live**. Visiting a product and leaving is not established evidence of dissatisfaction.
 - Real Resend inbox delivery, production OAuth, and unattended hosted job execution remain unverified.
-- Production customer sending remains disabled pending configuration and live verification. The judge demo always simulates delivery.
+- Production customer sending remains disabled pending configuration and live verification. The optional interactive sandbox simulates delivery; the prepared walkthrough records real restricted test-preview acceptance without claiming inbox delivery.
 - No learned churn model, return-time prediction, proven retention uplift, or closed-loop model learning is claimed.
 - Non-Shopify scenarios are synthetic examples; they do not establish production integrations with CRM, billing, or other SaaS providers.
 - Draft editing, inbound replies, complete privacy-erasure workflows, and operational cleanup require further work.
