@@ -1,0 +1,3 @@
+import { env } from '@resolve/runtime';
+import { database,storageError } from '@/lib/storage';
+export async function GET(){try{const events=await database().prepare('SELECT * FROM provider_events ORDER BY created_at DESC LIMIT 50').all();const counts=await database().prepare('SELECT provider,COUNT(*) AS count,MAX(created_at) AS last_event FROM provider_events GROUP BY provider').all();return Response.json({providers:[{id:'shopify',configured:!!(env.SHOPIFY_CLIENT_SECRET&&env.SHOPIFY_SHOP_DOMAIN),domain:env.SHOPIFY_SHOP_DOMAIN||null},{id:'stripe',configured:!!env.STRIPE_WEBHOOK_SECRET,domain:null}].map(p=>({...p,stats:counts.results.find(c=>c.provider===p.id)||null})),events:events.results},{headers:{'Cache-Control':'no-store'}})}catch(e){return storageError(e)}}

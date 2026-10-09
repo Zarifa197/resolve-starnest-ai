@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1791532889212,
+      "tag": "0000_unique_paibok",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791534466548,
+      "tag": "0001_confused_captain_cross",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791539312198,
+      "tag": "0002_open_expediter",
+      "breakpoints": true
+    }
+  ]
+}
