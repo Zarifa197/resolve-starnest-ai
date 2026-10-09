@@ -1,0 +1,46 @@
+{
+  "capturedAtUTC": "2026-10-09T14:43:29.432908+00:00",
+  "environment": "local browser UI + persisted D1; only synthetic accounts",
+  "screenshotsViewport": {
+    "desktop": [
+      1920,
+      1080
+    ],
+    "mobile": [
+      390,
+      844
+    ]
+  },
+  "journeys": [
+    {
+      "name": "Sample shopper",
+      "eventKinds": [
+        "checkout_abandoned"
+      ],
+      "allEventsSynthetic": true,
+      "decisionEngines": [],
+      "action": null,
+      "diagnosis": null,
+      "interventions": [],
+      "observedFinalRiskInBrowser": 0,
+      "reloadPersistenceVerified": true
+    },
+    {
+      "name": "Northstar",
+      "eventKinds": [
+        "integration_failed",
+        "integration_failed",
+        "integration_failed",
+        "support_open",
+        "usage_drop"
+      ],
+      "allEventsSynthetic": true,
+      "decisionEngines": [],
+      "action": null,
+      "diagnosis": null,
+      "interventions": [],
+      "observedFinalRiskInBrowser": 0,
+      "reloadPersistenceVerified": false
+    }
+  ]
+}

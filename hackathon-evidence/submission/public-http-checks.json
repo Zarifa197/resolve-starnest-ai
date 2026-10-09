@@ -1,0 +1,110 @@
+{
+  "at": "2026-10-09T15:32:07.034921+00:00",
+  "target": "https://resolve-starnest-ai.vercel.app",
+  "transport": "curl with normal TLS certificate verification; no cookies or authentication",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "finalUrl": "https://resolve-starnest-ai.vercel.app/",
+      "contentType": "text/html; charset=utf-8",
+      "durationMs": 374,
+      "headers": {
+        "server": "Vercel",
+        "x-vercel-id": "fra1::4q7bj-1791559926199-beb66c987c65",
+        "x-vercel-cache": "HIT",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "containsResolve": true
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "finalUrl": "https://resolve-starnest-ai.vercel.app/demo",
+      "contentType": "text/html; charset=utf-8",
+      "durationMs": 348,
+      "headers": {
+        "server": "Vercel",
+        "x-vercel-id": "fra1::f526k-1791559926199-c33b01ef912c",
+        "x-vercel-cache": "HIT",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "containsResolve": true
+    },
+    {
+      "path": "/dashboard",
+      "status": 401,
+      "finalUrl": "https://resolve-starnest-ai.vercel.app/dashboard",
+      "contentType": "application/json",
+      "durationMs": 376,
+      "headers": {
+        "server": "Vercel",
+        "x-vercel-id": "fra1::7v7pd-1791559926213-77672331db3b",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "summary": {
+        "error": "Authenticate your Shopify merchant account."
+      }
+    },
+    {
+      "path": "/api/judge",
+      "status": 503,
+      "finalUrl": "https://resolve-starnest-ai.vercel.app/api/judge",
+      "contentType": "application/json",
+      "durationMs": 498,
+      "headers": {
+        "server": "Vercel",
+        "x-vercel-id": "fra1::iad1::ww2kj-1791559926198-045a69506f75",
+        "x-vercel-cache": "MISS",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "summary": {
+        "error": "Storage is temporarily unavailable. Try again shortly."
+      }
+    },
+    {
+      "path": "/api/agent",
+      "status": 401,
+      "finalUrl": "https://resolve-starnest-ai.vercel.app/api/agent",
+      "contentType": "application/json",
+      "durationMs": 437,
+      "headers": {
+        "server": "Vercel",
+        "x-vercel-id": "fra1::pzbqn-1791559926623-51bc73108606",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "summary": {
+        "error": "Authenticate your Shopify merchant account."
+      }
+    },
+    {
+      "path": "/api/retention",
+      "status": 401,
+      "finalUrl": "https://resolve-starnest-ai.vercel.app/api/retention",
+      "contentType": "application/json",
+      "durationMs": 449,
+      "headers": {
+        "server": "Vercel",
+        "x-vercel-id": "fra1::db628-1791559926649-507f1d5ead0e",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "summary": {
+        "error": "Authenticate your Shopify merchant account."
+      }
+    },
+    {
+      "path": "/api/cron",
+      "status": 401,
+      "finalUrl": "https://resolve-starnest-ai.vercel.app/api/cron",
+      "contentType": "text/plain;charset=UTF-8",
+      "durationMs": 921,
+      "headers": {
+        "server": "Vercel",
+        "x-vercel-id": "fra1::iad1::jzqp6-1791559926649-f8ace4b364a3",
+        "x-vercel-cache": "MISS",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "containsResolve": false
+    }
+  ]
+}

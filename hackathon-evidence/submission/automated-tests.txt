@@ -1,0 +1,66 @@
+
+> site-creator-vinext-starter@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+5 decision safety checks passed
+✔ tests/agent.test.mjs (134.430209ms)
+(node:2802) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ judge sessions are opaque, expire and reject forged cookies (53.792ms)
+✔ judge reset preserves a different session and merchant records (34.658208ms)
+✔ public demo has atomic per-session analysis and reset budgets (2.805292ms)
+✔ judge session creation cap prevents unlimited public workspace creation (2.332167ms)
+(node:2803) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ risk has a reproducible 90-point breakdown backed by actual events (14.963041ms)
+✔ empty activity is unknown, not a fabricated healthy customer (0.098125ms)
+✔ order cancellation does not establish churn or a specific cause (0.145666ms)
+✔ restored integration overrides older failures but not later failures (0.443541ms)
+✔ usage drop without a numeric decline does not invent points (0.139541ms)
+✔ risk weights are capped at 100 and old repeated failures do not multiply base weight (3.889834ms)
+✔ integration problems select troubleshooting rather than incentives (0.654667ms)
+✔ onboarding, payment, healthy and opted-out scenarios choose appropriate actions (0.155042ms)
+✔ communication permission missing suppresses email (0.096333ms)
+✔ AI cannot cite nonexistent evidence, choose an unrelated intervention, or send to opted-out customer (0.925667ms)
+✔ AI schema rejects extra fields and an email without evidence (0.371542ms)
+✔ no action always clears email content (3.796792ms)
+✔ complete persisted workflow: evidence → AI → approval → simulated delivery → re-engagement → risk recalculation (25.373333ms)
+✔ approval before analysis and outcome before execution are rejected (2.623875ms)
+✔ duplicate approval cannot execute the same intervention twice (3.108416ms)
+✔ concurrent approval reserves only one intervention (3.064583ms)
+✔ new activity invalidates the draft and ingestion updates risk (3.244042ms)
+✔ invalid AI output falls back with an explicit label and remains unapproved (1.605291ms)
+✔ provider unavailable uses explicit fallback, not a fake live AI response (2.051125ms)
+✔ test email records acceptance without claiming delivery (2.898208ms)
+✔ provider timeout is unknown and cannot silently retry (4.563167ms)
+✔ unconfigured test email is rejected before reserving or sending (5.82225ms)
+✔ explicit automation executes once, while opt-outs and recent outreach stay blocked (7.576958ms)
+✔ cooldown expires after the configured interval (0.295875ms)
+✔ reset removes only synthetic demo history and returns risk to 90 (9.22225ms)
+✔ real Shopify adapter scopes customer history to the store and marks missing signals unavailable (2.192459ms)
+(node:2804) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ customer consent, order ingestion and trigger jobs are idempotent and merchant scoped (15.532ms)
+✔ fraud, inventory and merchant cancellations never enqueue customer outreach (9.053792ms)
+✔ anonymous browsing stays separate; verified login is never inferred from client ID (5.813833ms)
+✔ browsing alone never schedules an intervention (7.483458ms)
+✔ checkout wait, recovery and repeat detection prevent premature or duplicate jobs (5.586416ms)
+✔ source permission failures are persisted and do not report successful empty synchronization (1.962542ms)
+✔ manual default prepares a durable draft without sending (5.016167ms)
+✔ explicit automatic policy executes once and never replays outbound uncertainty (4.633041ms)
+✔ preflight suppression prevents AI and send; automatic fallback waits for approval (1.879375ms)
+✔ verified delivery receipts are idempotent; a late delivered receipt cannot undo complaint suppression (6.586917ms)
+✔ OAuth/proxy signatures reject tampering, stale messages and invalid sessions (2.905917ms)
+✔ Resend raw payload verification rejects stale and mutated receipts (21.635333ms)
+✔ production sender gates and recovery URL allowlist fail closed (0.269083ms)
+✔ Vercel D1 adapter sends parameterized statements together and never exposes a token in the URL (1.649542ms)
+7 webhook verification checks passed
+✔ tests/webhooks.test.mjs (196.13725ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 311.8855

@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-09T14:41:12.522180+00:00",
+  "environment": "actual local judge API; isolated synthetic sessions; no email or Gemini calls",
+  "anonymousProfiles": 0,
+  "startStatuses": [
+    200,
+    200
+  ],
+  "separateWorkspaces": true,
+  "sessionACount": 7,
+  "resetBStatus": 200,
+  "resetBPreservedA": true,
+  "crossSessionApprovalStatus": 403,
+  "crossSessionError": "Customer is outside this demo session.",
+  "foreignOriginStatus": 403
+}

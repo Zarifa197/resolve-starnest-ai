@@ -1,0 +1,56 @@
+
+> site-creator-vinext-starter@0.1.0 build:vercel
+> RESOLVE_RUNTIME=vercel next build --webpack
+
+▲ Next.js 16.3.4 (webpack)
+✓ Running next.config.ts took 71ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.1s
+  Running TypeScript ...
+  Finished TypeScript in 3.0s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/23) ...
+  Generating static pages using 7 workers (5/23) 
+  Generating static pages using 7 workers (11/23) 
+  Generating static pages using 7 workers (17/23) 
+✓ Generating static pages using 7 workers (23/23) in 127ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/agent
+├ ƒ /api/cases
+├ ƒ /api/cron
+├ ƒ /api/customers
+├ ƒ /api/imports
+├ ƒ /api/integrations
+├ ƒ /api/internal/agent
+├ ƒ /api/judge
+├ ƒ /api/pixel
+├ ƒ /api/pixel/collect
+├ ƒ /api/records
+├ ƒ /api/retention
+├ ƒ /api/tracking
+├ ƒ /api/unsubscribe
+├ ƒ /api/webhooks/resend
+├ ƒ /api/webhooks/shopify
+├ ƒ /api/webhooks/stripe
+├ ƒ /auth/shopify/callback
+├ ƒ /auth/shopify/start
+├ ○ /dashboard
+└ ○ /demo
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

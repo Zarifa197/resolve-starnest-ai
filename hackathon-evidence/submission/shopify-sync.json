@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-09T14:32:11.141229+00:00",
+  "durationMs": 2483,
+  "environment": "local app; actual authorized Shopify development store; read-only external queries; local projection writes",
+  "httpStatus": 200,
+  "response": {
+    "sync": {
+      "customers": {
+        "count": 5,
+        "complete": true
+      },
+      "orders": {
+        "count": 2,
+        "complete": true
+      },
+      "checkouts": {
+        "count": 0,
+        "complete": true
+      }
+    },
+    "detection": {
+      "detected": 0
+    }
+  }
+}

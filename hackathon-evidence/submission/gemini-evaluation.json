@@ -1,0 +1,381 @@
+{
+  "at": "2026-10-09T14:36:28.429Z",
+  "environment": "actual Gemini API; six synthetic contexts; no email provider calls",
+  "model": "gemini-3.5-flash-lite",
+  "promptVersion": "resolve-retention-2026-10-09-v2",
+  "promptSha256": "b92813b8599350b05d26116102cfdc9abefd72821797205c9a5f13d877437a5c",
+  "criteria": "Category agreement and valid evidence references only; not accuracy, retention, or full semantic quality",
+  "results": [
+    {
+      "id": "E01",
+      "name": "Incomplete checkout",
+      "expected": "checkout_recovery",
+      "baseline": "checkout_recovery",
+      "diagnosis": {
+        "action": "checkout_recovery",
+        "cause": "The checkout for Trail Shoes remained incomplete for five hours.",
+        "uncertainty": "It is unknown if the customer encountered a technical issue or simply paused their purchase.",
+        "explanation": "An incomplete checkout after the waiting period warrants checkout recovery.",
+        "evidenceIds": [
+          "checkout"
+        ],
+        "subject": "Complete your Trail Shoes order",
+        "message": "Hello Customer, we noticed you left Trail Shoes in your checkout. If you would like to complete your purchase, you can return to your cart anytime.",
+        "engine": "gemini",
+        "model": "gemini-3.5-flash-lite"
+      },
+      "usage": {
+        "promptTokenCount": 483,
+        "candidatesTokenCount": 134,
+        "totalTokenCount": 617,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 483
+          }
+        ],
+        "serviceTier": "standard"
+      },
+      "durationMs": 1373,
+      "promptVersion": "resolve-retention-2026-10-09-v2",
+      "context": {
+        "name": "Customer",
+        "source": "shopify",
+        "subscription": null,
+        "purchaseHistory": null,
+        "risk": {
+          "score": 45,
+          "level": "Moderate",
+          "evidence": [
+            {
+              "eventId": "e1",
+              "label": "Checkout is incomplete after the waiting period",
+              "points": 45
+            }
+          ],
+          "summary": "1 observed signal contributes to this score."
+        },
+        "events": [
+          {
+            "id": "e1",
+            "kind": "checkout_abandoned",
+            "summary": "A checkout containing Trail Shoes remained incomplete for five hours.",
+            "data": {
+              "products": "Trail Shoes"
+            },
+            "at": "2026-10-09T09:36:28.429Z",
+            "synthetic": true
+          }
+        ],
+        "communicationPermission": "allowed",
+        "previousInterventions": [],
+        "policy": {
+          "mode": "simulation",
+          "cooldownHours": 72,
+          "automatic": false
+        }
+      },
+      "categoryAgreement": true,
+      "validEvidence": true,
+      "status": "SUCCESS"
+    },
+    {
+      "id": "E02",
+      "name": "Customer cancellation with unknown cause",
+      "expected": "post_cancellation_followup",
+      "baseline": "post_cancellation_followup",
+      "diagnosis": {
+        "action": "post_cancellation_followup",
+        "cause": "Customer requested cancellation of the Trail Shoes order",
+        "uncertainty": "Reason for cancellation is limited to customer request without further explanation",
+        "explanation": "The customer requested a cancellation for their Trail Shoes order, warranting a post-cancellation follow-up.",
+        "evidenceIds": [
+          "cancel"
+        ],
+        "subject": "Regarding your recent Trail Shoes order cancellation",
+        "message": "Hello Customer, we received your request to cancel your Trail Shoes order and wanted to follow up to confirm that this has been processed. Please let us know if you need any further assistance.",
+        "engine": "gemini",
+        "model": "gemini-3.5-flash-lite"
+      },
+      "usage": {
+        "promptTokenCount": 493,
+        "candidatesTokenCount": 152,
+        "totalTokenCount": 645,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 493
+          }
+        ],
+        "serviceTier": "standard"
+      },
+      "durationMs": 1123,
+      "promptVersion": "resolve-retention-2026-10-09-v2",
+      "context": {
+        "name": "Customer",
+        "source": "shopify",
+        "subscription": null,
+        "purchaseHistory": null,
+        "risk": {
+          "score": 10,
+          "level": "Low",
+          "evidence": [
+            {
+              "eventId": "e1",
+              "label": "Customer-requested cancellation; dissatisfaction is unproven",
+              "points": 10
+            }
+          ],
+          "summary": "1 observed signal contributes to this score."
+        },
+        "events": [
+          {
+            "id": "e1",
+            "kind": "order_cancelled",
+            "summary": "The customer requested cancellation of the Trail Shoes order. No additional explanation is available.",
+            "data": {
+              "reason": "customer",
+              "products": "Trail Shoes"
+            },
+            "at": "2026-10-09T09:36:28.429Z",
+            "synthetic": true
+          }
+        ],
+        "communicationPermission": "allowed",
+        "previousInterventions": [],
+        "policy": {
+          "mode": "simulation",
+          "cooldownHours": 72,
+          "automatic": false
+        }
+      },
+      "categoryAgreement": true,
+      "validEvidence": true,
+      "status": "SUCCESS"
+    },
+    {
+      "id": "E03",
+      "name": "Repeat purchase inactivity",
+      "expected": "reengagement",
+      "baseline": "reengagement",
+      "diagnosis": {
+        "action": "reengagement",
+        "cause": "The customer's usual 25-day repeat purchase interval has extended to 60 days of inactivity.",
+        "uncertainty": "It is unknown whether the customer's needs have changed or if they intend to purchase again soon.",
+        "explanation": "Repeat customer inactivity exceeding the usual purchase interval warrants reengagement.",
+        "evidenceIds": [
+          "inactive"
+        ],
+        "subject": "We miss you",
+        "message": "Hello Customer, we noticed it has been a while since your last order. We wanted to check in and see if you need anything else.",
+        "engine": "gemini",
+        "model": "gemini-3.5-flash-lite"
+      },
+      "usage": {
+        "promptTokenCount": 512,
+        "candidatesTokenCount": 146,
+        "totalTokenCount": 658,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 512
+          }
+        ],
+        "serviceTier": "standard"
+      },
+      "durationMs": 2097,
+      "promptVersion": "resolve-retention-2026-10-09-v2",
+      "context": {
+        "name": "Customer",
+        "source": "shopify",
+        "subscription": null,
+        "purchaseHistory": "Two synchronized prior purchases; 25-day observed interval.",
+        "risk": {
+          "score": 30,
+          "level": "Moderate",
+          "evidence": [
+            {
+              "eventId": "e1",
+              "label": "Repeat purchases are overdue relative to observed history",
+              "points": 30
+            }
+          ],
+          "summary": "1 observed signal contributes to this score."
+        },
+        "events": [
+          {
+            "id": "e1",
+            "kind": "customer_inactive",
+            "summary": "A repeat purchaser has not ordered in 60 days; two observed earlier purchases were 25 days apart.",
+            "data": {
+              "days": 60,
+              "usualDays": 25
+            },
+            "at": "2026-10-09T09:36:28.429Z",
+            "synthetic": true
+          }
+        ],
+        "communicationPermission": "allowed",
+        "previousInterventions": [],
+        "policy": {
+          "mode": "simulation",
+          "cooldownHours": 72,
+          "automatic": false
+        }
+      },
+      "categoryAgreement": true,
+      "validEvidence": true,
+      "status": "SUCCESS"
+    },
+    {
+      "id": "E04",
+      "name": "Opted-out checkout",
+      "expected": "internal_review",
+      "baseline": "internal_review",
+      "diagnosis": {
+        "action": "internal_review",
+        "cause": "Customer has an incomplete checkout but communication permission is opted out.",
+        "uncertainty": "Low",
+        "explanation": "The customer's email permission is opted out, preventing outreach despite the incomplete checkout.",
+        "evidenceIds": [
+          "optoutcheckout"
+        ],
+        "subject": "",
+        "message": "",
+        "engine": "gemini",
+        "model": "gemini-3.5-flash-lite"
+      },
+      "usage": {
+        "promptTokenCount": 482,
+        "candidatesTokenCount": 91,
+        "totalTokenCount": 573,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 482
+          }
+        ],
+        "serviceTier": "standard"
+      },
+      "durationMs": 1145,
+      "promptVersion": "resolve-retention-2026-10-09-v2",
+      "context": {
+        "name": "Customer",
+        "source": "shopify",
+        "subscription": null,
+        "purchaseHistory": null,
+        "risk": {
+          "score": 45,
+          "level": "Moderate",
+          "evidence": [
+            {
+              "eventId": "e1",
+              "label": "Checkout is incomplete after the waiting period",
+              "points": 45
+            }
+          ],
+          "summary": "1 observed signal contributes to this score."
+        },
+        "events": [
+          {
+            "id": "e1",
+            "kind": "checkout_abandoned",
+            "summary": "Checkout remains incomplete, but email permission is opted out.",
+            "data": {},
+            "at": "2026-10-09T09:36:28.429Z",
+            "synthetic": true
+          }
+        ],
+        "communicationPermission": "opted_out",
+        "previousInterventions": [],
+        "policy": {
+          "mode": "simulation",
+          "cooldownHours": 72,
+          "automatic": false
+        }
+      },
+      "categoryAgreement": true,
+      "validEvidence": true,
+      "status": "SUCCESS"
+    },
+    {
+      "id": "E05",
+      "name": "Checkout already recovered",
+      "expected": "no_action",
+      "baseline": "no_action",
+      "diagnosis": {
+        "action": "no_action",
+        "cause": "The abandoned checkout was successfully recovered and completed before any outreach.",
+        "uncertainty": "low",
+        "explanation": "The account is healthy with no current risk signals as the checkout was already completed.",
+        "evidenceIds": [
+          "recovercheckout",
+          "purchase"
+        ],
+        "subject": "",
+        "message": "",
+        "engine": "gemini",
+        "model": "gemini-3.5-flash-lite"
+      },
+      "usage": {
+        "promptTokenCount": 510,
+        "candidatesTokenCount": 96,
+        "totalTokenCount": 606,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 510
+          }
+        ],
+        "serviceTier": "standard"
+      },
+      "durationMs": 2565,
+      "promptVersion": "resolve-retention-2026-10-09-v2",
+      "context": {
+        "name": "Customer",
+        "source": "shopify",
+        "subscription": null,
+        "purchaseHistory": null,
+        "risk": {
+          "score": 0,
+          "level": "Low",
+          "evidence": [],
+          "summary": "No unresolved risk signals in the available events."
+        },
+        "events": [
+          {
+            "id": "e1",
+            "kind": "checkout_abandoned",
+            "summary": "An earlier checkout was incomplete.",
+            "data": {},
+            "at": "2026-10-09T09:36:28.429Z",
+            "synthetic": true
+          },
+          {
+            "id": "e2",
+            "kind": "checkout_recovered",
+            "summary": "The same checkout completed before outreach.",
+            "data": {},
+            "at": "2026-10-09T14:36:28.429Z",
+            "synthetic": true
+          }
+        ],
+        "communicationPermission": "allowed",
+        "previousInterventions": [],
+        "policy": {
+          "mode": "simulation",
+          "cooldownHours": 72,
+          "automatic": false
+        }
+      },
+      "categoryAgreement": true,
+      "validEvidence": true,
+      "status": "SUCCESS"
+    },
+    {
+      "id": "E06",
+      "status": "FAILED",
+      "error": "AI recommendation conflicts with communication policy."
+    }
+  ]
+}

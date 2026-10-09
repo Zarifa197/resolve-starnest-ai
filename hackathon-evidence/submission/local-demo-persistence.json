@@ -1,0 +1,206 @@
+{
+  "capturedAtUTC": "2026-10-09T15:47:39.299863+00:00",
+  "environment": "Read-only local SQLite snapshot; only synthetic demo profiles; no credentials or workspace/session identifiers",
+  "profiles": [
+    {
+      "name": "Northstar",
+      "version": 4,
+      "decisions": [
+        {
+          "at": "2026-10-09T14:37:34.851Z",
+          "engine": "gemini",
+          "model": "gemini-3.5-flash-lite",
+          "action": "troubleshoot",
+          "subject": "Help with your CRM connection",
+          "uncertainty": "Exact cause of the authentication rejection is unknown beyond the reported error."
+        }
+      ],
+      "actions": [
+        {
+          "status": "simulated",
+          "mode": "simulation",
+          "createdAt": "2026-10-09T14:39:19.107Z",
+          "completedAt": "2026-10-09T14:39:19.108Z",
+          "subject": "Help with your CRM connection"
+        }
+      ],
+      "events": [
+        {
+          "kind": "integration_failed",
+          "synthetic": true,
+          "at": "2026-10-06T14:28:16.134Z"
+        },
+        {
+          "kind": "integration_failed",
+          "synthetic": true,
+          "at": "2026-10-07T13:28:16.134Z"
+        },
+        {
+          "kind": "integration_failed",
+          "synthetic": true,
+          "at": "2026-10-08T13:28:16.134Z"
+        },
+        {
+          "kind": "support_open",
+          "synthetic": true,
+          "at": "2026-10-08T14:28:16.134Z"
+        },
+        {
+          "kind": "usage_drop",
+          "synthetic": true,
+          "at": "2026-10-09T12:28:16.134Z"
+        },
+        {
+          "kind": "integration_restored",
+          "synthetic": true,
+          "at": "2026-10-09T14:39:19.375Z"
+        },
+        {
+          "kind": "support_resolved",
+          "synthetic": true,
+          "at": "2026-10-09T14:39:19.375Z"
+        },
+        {
+          "kind": "usage_recovered",
+          "synthetic": true,
+          "at": "2026-10-09T14:39:19.375Z"
+        }
+      ]
+    },
+    {
+      "name": "Sample shopper",
+      "version": 4,
+      "decisions": [
+        {
+          "at": "2026-10-09T14:31:44.560Z",
+          "engine": "gemini",
+          "model": "gemini-3.5-flash-lite",
+          "action": "checkout_recovery",
+          "subject": "Complete your Trail Shoes order",
+          "uncertainty": "The exact reason for leaving the checkout is unknown."
+        }
+      ],
+      "actions": [
+        {
+          "status": "simulated",
+          "mode": "simulation",
+          "createdAt": "2026-10-09T14:33:54.016Z",
+          "completedAt": "2026-10-09T14:33:54.016Z",
+          "subject": "Complete your Trail Shoes order"
+        }
+      ],
+      "events": [
+        {
+          "kind": "checkout_abandoned",
+          "synthetic": true,
+          "at": "2026-10-09T09:28:16.134Z"
+        },
+        {
+          "kind": "checkout_recovered",
+          "synthetic": true,
+          "at": "2026-10-09T14:35:32.128Z"
+        }
+      ]
+    },
+    {
+      "name": "Sample shopper",
+      "version": 4,
+      "decisions": [
+        {
+          "at": "2026-10-09T12:58:53.506Z",
+          "engine": "gemini",
+          "model": "gemini-3.5-flash-lite",
+          "action": "checkout_recovery",
+          "subject": "Still interested in your Trail Shoes?",
+          "uncertainty": "The reason for the incomplete checkout is unknown."
+        }
+      ],
+      "actions": [
+        {
+          "status": "simulated",
+          "mode": "simulation",
+          "createdAt": "2026-10-09T13:01:45.463Z",
+          "completedAt": "2026-10-09T13:01:45.464Z",
+          "subject": "Still interested in your Trail Shoes?"
+        }
+      ],
+      "events": [
+        {
+          "kind": "checkout_abandoned",
+          "synthetic": true,
+          "at": "2026-10-09T07:58:17.649Z"
+        },
+        {
+          "kind": "checkout_recovered",
+          "synthetic": true,
+          "at": "2026-10-09T13:02:03.863Z"
+        }
+      ]
+    },
+    {
+      "name": "Northstar",
+      "version": 4,
+      "decisions": [
+        {
+          "at": "2026-10-09T11:26:27.915Z",
+          "engine": "gemini",
+          "model": "gemini-3.5-flash-lite",
+          "action": "troubleshoot",
+          "subject": "Help with your CRM integration connection",
+          "uncertainty": "Whether the correct CRM API keys or permissions have been updated on the customer side."
+        }
+      ],
+      "actions": [
+        {
+          "status": "simulated",
+          "mode": "simulation",
+          "createdAt": "2026-10-09T11:27:14.044Z",
+          "completedAt": "2026-10-09T11:27:14.044Z",
+          "subject": "Help with your CRM integration connection"
+        }
+      ],
+      "events": [
+        {
+          "kind": "integration_failed",
+          "synthetic": true,
+          "at": "2026-10-06T11:25:38.779Z"
+        },
+        {
+          "kind": "integration_failed",
+          "synthetic": true,
+          "at": "2026-10-07T10:25:38.779Z"
+        },
+        {
+          "kind": "integration_failed",
+          "synthetic": true,
+          "at": "2026-10-08T10:25:38.779Z"
+        },
+        {
+          "kind": "support_open",
+          "synthetic": true,
+          "at": "2026-10-08T11:25:38.779Z"
+        },
+        {
+          "kind": "usage_drop",
+          "synthetic": true,
+          "at": "2026-10-09T09:25:38.779Z"
+        },
+        {
+          "kind": "integration_restored",
+          "synthetic": true,
+          "at": "2026-10-09T11:27:33.310Z"
+        },
+        {
+          "kind": "support_resolved",
+          "synthetic": true,
+          "at": "2026-10-09T11:27:33.310Z"
+        },
+        {
+          "kind": "usage_recovered",
+          "synthetic": true,
+          "at": "2026-10-09T11:27:33.310Z"
+        }
+      ]
+    }
+  ]
+}
