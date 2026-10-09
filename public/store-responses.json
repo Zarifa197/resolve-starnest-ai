@@ -1,0 +1,29 @@
+{
+  "responses": [
+    {
+      "reference": "#1001",
+      "orderUpdatedAt": "2026-10-09T09:10:17Z",
+      "generatedAt": "2026-10-09T22:06:21.476Z",
+      "engine": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "purpose": "operator_test_preview",
+      "customerConsent": "unknown",
+      "customerSending": false,
+      "subject": "Order Cancellation Update",
+      "message": "Hello, \n\nWe are writing to confirm that order #1001 for The Collection Snowboard: Liquid has been cancelled and a refund has been issued.\n\nThank you.",
+      "explanation": "This email draft is generated from Shopify test-order evidence showing that the order was cancelled and refunded. Since customer consent is unknown and this is an operator test preview, no actual customer contact or email delivery is claimed.",
+      "uncertainty": "Customer consent status is unknown, and the exact motive for cancellation beyond the Shopify reason 'CUSTOMER' is not specified.",
+      "evidenceKinds": [
+        "order_created",
+        "order_paid",
+        "refund_issued",
+        "order_cancelled"
+      ],
+      "delivery": {
+        "status": "accepted",
+        "checkedAt": "2026-10-09T22:06:21.474Z",
+        "note": "Resend accepted this operator test preview. Inbox delivery has not been verified. No customer email was sent."
+      }
+    }
+  ]
+}

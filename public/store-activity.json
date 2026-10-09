@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "shop": "resolve-test-xsmzpr1z.myshopify.com",
+  "checkedAt": "2026-10-09T22:03:39.895Z",
+  "records": [
+    {
+      "reference": "#1002",
+      "test": true,
+      "products": [
+        {
+          "title": "The Collection Snowboard: Liquid",
+          "quantity": 1
+        }
+      ],
+      "amount": "749.95",
+      "currency": "USD",
+      "status": "PAID",
+      "cancelled": false,
+      "updatedAt": "2026-10-09T13:44:06Z",
+      "events": [
+        {
+          "kind": "order_created",
+          "at": "2026-10-09T13:44:04Z",
+          "summary": "Order #1002 created."
+        },
+        {
+          "kind": "order_paid",
+          "at": "2026-10-09T13:44:05Z",
+          "summary": "Shopify confirms a successful test payment transaction."
+        }
+      ],
+      "source": "Shopify Admin API",
+      "synthetic": false
+    },
+    {
+      "reference": "#1001",
+      "test": true,
+      "products": [
+        {
+          "title": "The Collection Snowboard: Liquid",
+          "quantity": 1
+        }
+      ],
+      "amount": "749.95",
+      "currency": "USD",
+      "status": "REFUNDED",
+      "cancelled": true,
+      "updatedAt": "2026-10-09T09:10:17Z",
+      "events": [
+        {
+          "kind": "order_created",
+          "at": "2026-10-09T09:09:01Z",
+          "summary": "Order #1001 created."
+        },
+        {
+          "kind": "order_paid",
+          "at": "2026-10-09T09:09:02Z",
+          "summary": "Shopify confirms a successful test payment transaction."
+        },
+        {
+          "kind": "refund_issued",
+          "at": "2026-10-09T09:10:16Z",
+          "summary": "A test refund was recorded by Shopify."
+        },
+        {
+          "kind": "order_cancelled",
+          "at": "2026-10-09T09:10:17Z",
+          "summary": "Order cancelled. Shopify reason: CUSTOMER."
+        }
+      ],
+      "source": "Shopify Admin API",
+      "synthetic": false
+    }
+  ],
+  "coverage": {
+    "orders": "Captured from Shopify",
+    "browsing": "No verified browsing events connected",
+    "carts": "No verified cart events connected",
+    "email": "Automatic customer sending is not enabled"
+  },
+  "source": "recorded",
+  "connectionNote": "Saved Shopify records. Live updates require the server-side Shopify connection."
+}
