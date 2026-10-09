@@ -1,0 +1,56 @@
+
+> site-creator-vinext-starter@0.1.0 build:vercel
+> RESOLVE_RUNTIME=vercel next build --webpack
+
+▲ Next.js 16.3.4 (webpack)
+✓ Running next.config.ts took 100ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.2s
+  Running TypeScript ...
+
+  We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+  	- include was updated to add '.next-vercel/types/**/*.ts'
+  	- include was updated to add '.next-vercel/dev/types/**/*.ts'
+
+  Finished TypeScript in 3.2s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/21) ...
+  Generating static pages using 7 workers (5/21) 
+  Generating static pages using 7 workers (10/21) 
+  Generating static pages using 7 workers (15/21) 
+✓ Generating static pages using 7 workers (21/21) in 147ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/agent
+├ ƒ /api/cases
+├ ƒ /api/cron
+├ ƒ /api/customers
+├ ƒ /api/imports
+├ ƒ /api/integrations
+├ ƒ /api/internal/agent
+├ ƒ /api/judge
+├ ƒ /api/pixel
+├ ƒ /api/records
+├ ƒ /api/retention
+├ ƒ /api/unsubscribe
+├ ƒ /api/webhooks/resend
+├ ƒ /api/webhooks/shopify
+├ ƒ /api/webhooks/stripe
+├ ƒ /auth/shopify/callback
+├ ƒ /auth/shopify/start
+├ ○ /dashboard
+└ ○ /demo
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { signature,verifyStripe,verifyShopify } from '../lib/webhooks.ts';
+const secret='unit-test-only-not-a-provider-secret';const raw='{"id":"evt_unit","livemode":false}';const now=Date.now();const timestamp=Math.floor(now/1000);
+const stripe=await signature(secret,`${timestamp}.${raw}`,'hex');
+assert.equal(await verifyStripe(raw,`t=${timestamp},v1=${stripe}`,secret,now),true);
+assert.equal(await verifyStripe(raw+' ',`t=${timestamp},v1=${stripe}`,secret,now),false);
+assert.equal(await verifyStripe(raw,`t=${timestamp},v1=${stripe}`,secret,now+301000),false);
+assert.equal(await verifyStripe(raw,'t=NaN,v1=bad',secret,now),false);
+const shop=await signature(secret,raw,'base64');
+assert.equal(await verifyShopify(raw,shop,secret),true);
+assert.equal(await verifyShopify(raw,shop,'different'),false);
+assert.equal(await verifyShopify(raw+' ',shop,secret),false);
+console.log('7 webhook verification checks passed');

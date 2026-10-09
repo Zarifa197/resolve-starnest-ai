@@ -1,0 +1,47 @@
+
+> site-creator-vinext-starter@0.1.0 build:vercel
+> RESOLVE_RUNTIME=vercel next build --webpack
+
+▲ Next.js 16.3.4 (webpack)
+✓ Running next.config.ts took 98ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.2s
+  Running TypeScript ...
+  Finished TypeScript in 2.9s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/20) ...
+  Generating static pages using 7 workers (5/20) 
+  Generating static pages using 7 workers (10/20) 
+  Generating static pages using 7 workers (15/20) 
+✓ Generating static pages using 7 workers (20/20) in 120ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/agent
+├ ƒ /api/cases
+├ ƒ /api/cron
+├ ƒ /api/customers
+├ ƒ /api/imports
+├ ƒ /api/integrations
+├ ƒ /api/internal/agent
+├ ƒ /api/pixel
+├ ƒ /api/records
+├ ƒ /api/retention
+├ ƒ /api/unsubscribe
+├ ƒ /api/webhooks/resend
+├ ƒ /api/webhooks/shopify
+├ ƒ /api/webhooks/stripe
+├ ƒ /auth/shopify/callback
+├ ƒ /auth/shopify/start
+└ ○ /dashboard
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

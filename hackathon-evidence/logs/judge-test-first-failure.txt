@@ -1,0 +1,93 @@
+
+> site-creator-vinext-starter@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+5 decision safety checks passed
+✔ tests/agent.test.mjs (118.905417ms)
+(node:79158) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+file://[PROJECT_ROOT]/lib/judge-session.ts:1
+export class JudgeError extends Error {constructor(message:string,public status=403){super(message)}}
+                                                                         ^^^^^^^^^^
+export async function judgeSession(req:Request,db:D1Database,create=false,now=Date.now()) {
+
+SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript parameter property is not supported in strip-only mode
+    at parseTypeScript (node:internal/modules/typescript:68:40)
+    at processTypeScriptCode (node:internal/modules/typescript:146:42)
+    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)
+    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:663:29)
+    at #translate (node:internal/modules/esm/loader:467:20)
+    at afterLoad (node:internal/modules/esm/loader:523:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:528:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:565:36)
+    at afterResolve (node:internal/modules/esm/loader:618:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:624:12) {
+  code: 'ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX'
+}
+
+Node.js v25.2.1
+✖ tests/judge.test.mjs (117.422709ms)
+(node:79159) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ risk has a reproducible 90-point breakdown backed by actual events (7.469792ms)
+✔ empty activity is unknown, not a fabricated healthy customer (0.063542ms)
+✔ order cancellation does not establish churn or a specific cause (0.094625ms)
+✔ restored integration overrides older failures but not later failures (0.087208ms)
+✔ usage drop without a numeric decline does not invent points (0.055208ms)
+✔ risk weights are capped at 100 and old repeated failures do not multiply base weight (0.053625ms)
+✔ integration problems select troubleshooting rather than incentives (0.191625ms)
+✔ onboarding, payment, healthy and opted-out scenarios choose appropriate actions (0.12075ms)
+✔ communication permission missing suppresses email (0.066834ms)
+✔ AI cannot cite nonexistent evidence, choose an unrelated intervention, or send to opted-out customer (0.837166ms)
+✔ AI schema rejects extra fields and an email without evidence (0.338333ms)
+✔ no action always clears email content (0.477708ms)
+✔ complete persisted workflow: evidence → AI → approval → simulated delivery → re-engagement → risk recalculation (12.931292ms)
+✔ approval before analysis and outcome before execution are rejected (1.438875ms)
+✔ duplicate approval cannot execute the same intervention twice (2.189041ms)
+✔ concurrent approval reserves only one intervention (2.914208ms)
+✔ new activity invalidates the draft and ingestion updates risk (2.577958ms)
+✔ invalid AI output falls back with an explicit label and remains unapproved (1.956083ms)
+✔ provider unavailable uses explicit fallback, not a fake live AI response (1.560208ms)
+✔ test email records acceptance without claiming delivery (2.060583ms)
+✔ provider timeout is unknown and cannot silently retry (2.004125ms)
+✔ unconfigured test email is rejected before reserving or sending (2.389708ms)
+✔ explicit automation executes once, while opt-outs and recent outreach stay blocked (2.561416ms)
+✔ cooldown expires after the configured interval (0.077167ms)
+✔ reset removes only synthetic demo history and returns risk to 90 (2.492292ms)
+✔ real Shopify adapter scopes customer history to the store and marks missing signals unavailable (0.892125ms)
+(node:79160) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ customer consent, order ingestion and trigger jobs are idempotent and merchant scoped (17.046125ms)
+✔ fraud, inventory and merchant cancellations never enqueue customer outreach (4.249625ms)
+✔ anonymous browsing stays separate; verified login is never inferred from client ID (1.819333ms)
+✔ browsing alone never schedules an intervention (2.677542ms)
+✔ checkout wait, recovery and repeat detection prevent premature or duplicate jobs (1.98725ms)
+✔ source permission failures are persisted and do not report successful empty synchronization (1.450583ms)
+✔ manual default prepares a durable draft without sending (3.164375ms)
+✔ explicit automatic policy executes once and never replays outbound uncertainty (3.9135ms)
+✔ preflight suppression prevents AI and send; automatic fallback waits for approval (1.40425ms)
+✔ verified delivery receipts are idempotent; a late delivered receipt cannot undo complaint suppression (2.72525ms)
+✔ OAuth/proxy signatures reject tampering, stale messages and invalid sessions (2.647542ms)
+✔ Resend raw payload verification rejects stale and mutated receipts (18.482458ms)
+✔ production sender gates and recovery URL allowlist fail closed (0.211958ms)
+✔ Vercel D1 adapter sends parameterized statements together and never exposes a token in the URL (1.381541ms)
+7 webhook verification checks passed
+✔ tests/webhooks.test.mjs (116.858542ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 42
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 219.184417
+
+✖ failing tests:
+
+test at tests/judge.test.mjs:1:1
+✖ tests/judge.test.mjs (117.422709ms)
+  'test failed'

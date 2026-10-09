@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-09T12:59:40.962151+00:00",
+  "environment": "local; real authorized Shopify development store",
+  "response": {
+    "sync": {
+      "customers": {
+        "count": 4,
+        "complete": true
+      },
+      "orders": {
+        "count": 1,
+        "complete": true
+      },
+      "checkouts": {
+        "count": 0,
+        "complete": true
+      }
+    },
+    "detection": {
+      "detected": 0
+    }
+  }
+}

@@ -1,0 +1,5 @@
+
+> site-creator-vinext-starter@0.1.0 typecheck
+> tsc --noEmit
+
+lib/retention-gemini.ts(9,315): error TS2339: Property 'voice' does not exist on type '{ brandName: string; senderName: string; brandVoice: string; language: "English"; replyTo: string; senderEmail: string; postalAddress: string; allowed: ("checkout_recovery" | "cart_recovery" | "post_cancellation_followup" | "reengagement")[]; ... 8 more ...; otherRecoveryAutomation: boolean; }'.

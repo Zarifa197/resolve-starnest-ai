@@ -1,0 +1,60 @@
+
+> site-creator-vinext-starter@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+5 decision safety checks passed
+✔ tests/agent.test.mjs (95.233625ms)
+(node:69832) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ risk has a reproducible 90-point breakdown backed by actual events (7.489083ms)
+✔ empty activity is unknown, not a fabricated healthy customer (0.0695ms)
+✔ order cancellation does not establish churn or a specific cause (0.099416ms)
+✔ restored integration overrides older failures but not later failures (0.086042ms)
+✔ usage drop without a numeric decline does not invent points (0.058167ms)
+✔ risk weights are capped at 100 and old repeated failures do not multiply base weight (0.057625ms)
+✔ integration problems select troubleshooting rather than incentives (0.190625ms)
+✔ onboarding, payment, healthy and opted-out scenarios choose appropriate actions (0.1845ms)
+✔ communication permission missing suppresses email (0.281583ms)
+✔ AI cannot cite nonexistent evidence, choose an unrelated intervention, or send to opted-out customer (1.604416ms)
+✔ AI schema rejects extra fields and an email without evidence (1.284875ms)
+✔ no action always clears email content (0.159083ms)
+✔ complete persisted workflow: evidence → AI → approval → simulated delivery → re-engagement → risk recalculation (13.503792ms)
+✔ approval before analysis and outcome before execution are rejected (2.795583ms)
+✔ duplicate approval cannot execute the same intervention twice (3.086417ms)
+✔ concurrent approval reserves only one intervention (2.37125ms)
+✔ new activity invalidates the draft and ingestion updates risk (2.728375ms)
+✔ invalid AI output falls back with an explicit label and remains unapproved (1.4505ms)
+✔ provider unavailable uses explicit fallback, not a fake live AI response (1.407959ms)
+✔ test email records acceptance without claiming delivery (2.6845ms)
+✔ provider timeout is unknown and cannot silently retry (3.493208ms)
+✔ unconfigured test email is rejected before reserving or sending (1.902083ms)
+✔ explicit automation executes once, while opt-outs and recent outreach stay blocked (2.670334ms)
+✔ cooldown expires after the configured interval (0.075292ms)
+✔ reset removes only synthetic demo history and returns risk to 90 (3.829041ms)
+✔ real Shopify adapter scopes customer history to the store and marks missing signals unavailable (1.103583ms)
+(node:69833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ customer consent, order ingestion and trigger jobs are idempotent and merchant scoped (15.688ms)
+✔ fraud, inventory and merchant cancellations never enqueue customer outreach (4.132583ms)
+✔ anonymous browsing stays separate; verified login is never inferred from client ID (1.69475ms)
+✔ browsing alone never schedules an intervention (1.920417ms)
+✔ checkout wait, recovery and repeat detection prevent premature or duplicate jobs (2.777917ms)
+✔ source permission failures are persisted and do not report successful empty synchronization (1.290709ms)
+✔ manual default prepares a durable draft without sending (3.329333ms)
+✔ explicit automatic policy executes once and never replays outbound uncertainty (4.188ms)
+✔ preflight suppression prevents AI and send; automatic fallback waits for approval (1.505709ms)
+✔ verified delivery receipts are idempotent; a late delivered receipt cannot undo complaint suppression (3.071958ms)
+✔ OAuth/proxy signatures reject tampering, stale messages and invalid sessions (3.457291ms)
+✔ Resend raw payload verification rejects stale and mutated receipts (20.102125ms)
+✔ production sender gates and recovery URL allowlist fail closed (0.237291ms)
+✔ Vercel D1 adapter sends parameterized statements together and never exposes a token in the URL (1.442041ms)
+7 webhook verification checks passed
+✔ tests/webhooks.test.mjs (99.244ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 210.150709
