@@ -1,3 +1,4 @@
+import {fileURLToPath} from "node:url";
 import vinext from "vinext";
 import { defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";
@@ -53,6 +54,7 @@ export default defineConfig(async ({ command }) => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    resolve: {alias: {"@resolve/runtime": fileURLToPath(new URL("./lib/runtime-env.ts",import.meta.url))}},
     server: {
       ...(managedLinux
         ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }

@@ -57,3 +57,5 @@ next-env.d.ts
 /extensions/**/node_modules/
 /extensions/**/dist/
 /shopify-setup-log*
+
+.next-vercel/

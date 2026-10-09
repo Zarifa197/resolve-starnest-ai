@@ -15,3 +15,5 @@ declare namespace Cloudflare {
     BUCKET?: R2Bucket;
   }
 }
+
+declare module '@resolve/runtime' {export const env: Cloudflare.Env;}

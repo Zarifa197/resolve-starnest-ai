@@ -15,7 +15,9 @@
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "db:retention:local": "node scripts/migrate-retention-local.mjs",
-    "agent": "node scripts/run-agent.mjs"
+    "agent": "node scripts/run-agent.mjs",
+    "build:vercel": "RESOLVE_RUNTIME=vercel next build --webpack",
+    "dev:vercel": "RESOLVE_RUNTIME=vercel next dev"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
