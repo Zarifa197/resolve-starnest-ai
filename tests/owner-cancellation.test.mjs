@@ -32,3 +32,18 @@ test('wrong store, wrong recipient, missing explicit consent and recorded snapsh
 test('delivery is reported only after an actual provider receipt',async()=>{
  const db=fixture();const transport=async(url)=>url.includes('generateContent')?Response.json({candidates:[{content:{parts:[{text:JSON.stringify(draft)}]}}]}):url==='https://api.resend.com/emails'?Response.json({id:'private'}):Response.json({last_event:'delivered'});await ownerRecoveryCycle({db,activity,participant,config,transport});assert.equal(projectOwnerRecovery(db,participant,'now').responses[0].delivery.status,'delivered');db.close();
 });
+
+
+test('staff cancellation gets category-specific context and one owner email',async()=>{
+ const db=fixture();let sends=0;
+ const staffOrder={...order,reference:'#1004',cancelReason:'STAFF'};
+ const staffDraft={...draft,subject:'Update on your test order #1004',message:'Our store staff cancelled your test order #1004. We apologize for any inconvenience and are here to assist you.',explanation:'Shopify records a staff cancellation; acknowledge it and offer assistance.'};
+ const transport=async(url,options)=>{
+  if(url.includes('generateContent')){const body=JSON.parse(options.body);assert.equal(JSON.parse(body.contents[0].parts[0].text).cancelReason,'STAFF');assert.match(body.systemInstruction.parts[0].text,/never imply that the shopper requested/);return Response.json({candidates:[{content:{parts:[{text:JSON.stringify(staffDraft)}]}}]});}
+  if(url==='https://api.resend.com/emails'){sends++;assert.deepEqual(JSON.parse(options.body).to,[participant.email]);return Response.json({id:'private-staff-receipt'});}
+  return Response.json({last_event:'sent'});
+ };
+ const args={db,activity:{...activity,records:[staffOrder]},participant,config,transport};
+ assert.equal(await ownerRecoveryCycle(args),1);assert.equal(await ownerRecoveryCycle(args),0);assert.equal(sends,1);
+ const record=projectOwnerRecovery(db,participant,'now').responses[0];assert.equal(record.reference,'#1004');assert.match(record.uncertainty,/staff cancellation/);assert.match(record.message,/store staff cancelled/);db.close();
+});
