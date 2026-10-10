@@ -1,8 +1,50 @@
 {
   "version": 1,
   "shop": "resolve-test-xsmzpr1z.myshopify.com",
-  "checkedAt": "2026-10-09T23:58:01.127Z",
+  "checkedAt": "2026-10-10T00:14:31.928Z",
   "records": [
+    {
+      "reference": "#1004",
+      "customerId": "10718960189687",
+      "participantId": "893b88e2-875d-4c1f-bd27-70a83724b8f0",
+      "test": true,
+      "products": [
+        {
+          "title": "The Collection Snowboard: Oxygen",
+          "quantity": 1
+        }
+      ],
+      "amount": "1025.0",
+      "currency": "USD",
+      "status": "REFUNDED",
+      "cancelled": true,
+      "cancelReason": "STAFF",
+      "updatedAt": "2026-10-10T00:11:18Z",
+      "events": [
+        {
+          "kind": "order_created",
+          "at": "2026-10-10T00:10:09Z",
+          "summary": "Order #1004 created."
+        },
+        {
+          "kind": "order_paid",
+          "at": "2026-10-10T00:10:11Z",
+          "summary": "Shopify confirms a successful test payment transaction."
+        },
+        {
+          "kind": "refund_issued",
+          "at": "2026-10-10T00:11:17Z",
+          "summary": "A test refund was recorded by Shopify."
+        },
+        {
+          "kind": "order_cancelled",
+          "at": "2026-10-10T00:11:18Z",
+          "summary": "Order cancelled. Shopify reason: STAFF."
+        }
+      ],
+      "source": "Shopify Admin API",
+      "synthetic": false
+    },
     {
       "reference": "#1003",
       "customerId": "10718960189687",

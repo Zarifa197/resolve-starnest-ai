@@ -1,12 +1,36 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-09T23:58:01.127Z",
+  "checkedAt": "2026-10-10T00:14:31.928Z",
   "agent": {
     "mode": "local_owner_trial",
     "pollSeconds": 60,
     "note": "The owner trial agent runs on the operator’s computer. These are recorded receipts; this page does not send emails."
   },
   "responses": [
+    {
+      "reference": "#1004",
+      "participantId": "893b88e2-875d-4c1f-bd27-70a83724b8f0",
+      "orderUpdatedAt": "2026-10-10T00:11:18Z",
+      "generatedAt": "2026-10-10T00:14:31.935Z",
+      "purpose": "owner_cancellation_support",
+      "engine": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "subject": "Update regarding your test order #1004",
+      "message": "Hi there,\n\nWe are writing to confirm that your test order #1004 for The Collection Snowboard: Oxygen has been cancelled by the store staff. We apologize for any inconvenience this may have caused. A test refund has been issued for this transaction.\n\nPlease let us know if you have any questions or need further assistance with your test store.",
+      "explanation": "The email confirms the cancellation of order #1004 by the store staff, mentions the refund since a refund_issued event is present, and offers assistance without assuming dissatisfaction or inventing reasons.",
+      "uncertainty": "Shopify records a staff cancellation. The detailed operational reason and the shopper’s satisfaction are unknown.",
+      "evidenceKinds": [
+        "order_created",
+        "order_paid",
+        "refund_issued",
+        "order_cancelled"
+      ],
+      "delivery": {
+        "status": "accepted",
+        "checkedAt": "2026-10-10T00:14:36.905Z",
+        "note": "Resend accepted this cancellation email for the enrolled owner. Inbox delivery has not been confirmed."
+      }
+    },
     {
       "reference": "#1003",
       "participantId": "893b88e2-875d-4c1f-bd27-70a83724b8f0",
