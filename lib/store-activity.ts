@@ -15,7 +15,7 @@ export function projectStoreActivity(orders:ActivityOrder[],checkedAt:string,own
   events.sort((a,b)=>a.at.localeCompare(b.at));
   const rawId=o.customer?.id?.match(/^gid:\/\/shopify\/Customer\/(\d+)$/)?.[1];
   const participantId=owner&&/^[a-f0-9-]{36}$/i.test(owner.id)&&o.email?.trim().toLowerCase()===owner.email.trim().toLowerCase()?owner.id:null;
-  return {reference:clean(o.name,40),customerId:rawId||null,participantId,test:true,products,amount:clean(o.totalPriceSet?.shopMoney.amount,30),currency:clean(o.totalPriceSet?.shopMoney.currencyCode,8),status:clean(o.displayFinancialStatus||'UNKNOWN',40),cancelled:!!o.cancelledAt,updatedAt:o.updatedAt,events,source:'Shopify Admin API',synthetic:false};
+  return {reference:clean(o.name,40),customerId:rawId||null,participantId,test:true,products,amount:clean(o.totalPriceSet?.shopMoney.amount,30),currency:clean(o.totalPriceSet?.shopMoney.currencyCode,8),status:clean(o.displayFinancialStatus||'UNKNOWN',40),cancelled:!!o.cancelledAt,cancelReason:o.cancelledAt?clean(o.cancelReason||'UNKNOWN',60):null,updatedAt:o.updatedAt,events,source:'Shopify Admin API',synthetic:false};
  });
  return {version:1,shop:ACTIVITY_SHOP,checkedAt,records,coverage:{orders:'Captured from Shopify',browsing:'No verified browsing events connected',carts:'No verified cart events connected',email:'Automatic customer sending is not enabled'},source:'recorded' as 'live'|'recorded',connectionNote:'Saved Shopify records. Live updates are not connected.'};
 }
