@@ -4,6 +4,8 @@
 
 Resolve connects Shopify order activity to an AI support workflow: observe what happened, understand the recorded cancellation category, generate a relevant email with Gemini, and preserve the message and provider status in an inspectable workspace.
 
+**Planned expansion: behavior-based retention.** Resolve will also use Shopify browsing, cart, and checkout activity to identify possible friction or dissatisfaction, help Gemini understand the available context, and send a relevant support email to an identified customer under the merchant's outreach policy. These behavior-based triggers are planned; the verified automatic email flow today starts with order cancellations.
+
 **The working MVP uses real Shopify test orders, real Gemini generation, and real Resend API requests.** Its automatic sender is restricted to an explicitly enrolled owner testing their own store. It is an early retention product, not a claim of proven revenue recovery.
 
 [**Open the live workspace →**](https://resolve-starnest-ai.vercel.app/demo) · [Product website](https://resolve-starnest-ai.vercel.app/) · [Connection guide](https://resolve-starnest-ai.vercel.app/guide)
@@ -201,6 +203,20 @@ npm run build:vercel
 The latest full suite passed **69 test entries**, including owner matching, category routing, duplicate reservations, changed-order replays, send timeouts, rejected drafts, provider-status integrity, retention rules, session isolation, OAuth/webhook checks, and the D1 adapter. External providers are mocked in unit tests; they are not 69 live email sends.
 
 The actual #1003 and #1004 trial records provide the separate Shopify/Gemini/Resend evidence. [Source activity](public/store-activity.json) and [owner email records](public/owner-recovery.json) are inspectable JSON projections. Earlier evaluation results and logs are preserved in [the submission audit](SUBMISSION_AUDIT.md) and [evidence directory](hackathon-evidence/submission/); historical synthetic outcomes are not evidence of actual customer recovery.
+
+## Planned: support based on shopper behavior
+
+The next integration extends the same **observe → understand → email → log** workflow to the shopping journey:
+
+| Planned signal | Intended response |
+| --- | --- |
+| A known shopper views products and leaves without buying | A helpful product question or offer of assistance, using the products actually viewed. |
+| A shopper adds products to the cart and leaves | A cart-specific email asking whether they need help with those items. |
+| A shopper starts checkout but does not complete it | A checkout-specific support email based on any recorded friction, without inventing a payment failure. |
+
+Gemini will distinguish observed behavior from an inferred cause. Leaving a store alone does not prove dissatisfaction; when the reason is unclear, the message should ask rather than assume. Outreach requires a linked customer email and applicable consent and merchant policy. Anonymous browsing cannot produce an identifiable email recipient by itself.
+
+Each eligible intervention will keep the triggering events, Gemini's explanation, the email content, and the provider status visible in the workspace. This integration is **planned, not yet verified in the live demo**; it requires storefront collection, identity linking, durable storage, and a hosted processor.
 
 ## What is not connected yet
 
