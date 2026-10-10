@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
-import {eligibleCancellation,ownerRecoveryCycle,projectOwnerRecovery,validateOwnerDraft,OWNER_SHOP} from '../lib/owner-cancellation.mjs';
+import {eligibleCancellation,ownerRecoveryCycle,projectOwnerRecovery,validateOwnerDraft,OWNER_SHOP,OWNER_REASONS} from '../lib/owner-cancellation.mjs';
 const participant={id:'893b88e2-875d-4c1f-bd27-70a83724b8f0',shop:OWNER_SHOP,email:'owner@example.com',consent:'explicit_owner_trial',created_at:'2026-10-09T23:21:00Z'};
 const order={reference:'#1003',test:true,synthetic:false,cancelled:true,cancelReason:'CUSTOMER',customerId:'12345',participantId:participant.id,updatedAt:'2026-10-09T23:50:15Z',products:[{title:'Ski Wax',quantity:1}],events:[{kind:'order_created',at:'2026-10-09T23:48:37Z',summary:'Order created'},{kind:'order_cancelled',at:'2026-10-09T23:50:15Z',summary:'Customer cancelled'}]};
 const draft={subject:'Can we help with your cancelled order?',message:'Your order #1003 was cancelled. Did anything go wrong? We would be happy to help.',explanation:'A cancellation event warrants asking whether support is needed.',uncertainty:'Unknown motive',evidenceKinds:['order_cancelled']};
@@ -11,7 +11,7 @@ const config={email:participant.email,geminiKey:'test-gemini-key',resendKey:'tes
 const activity={shop:OWNER_SHOP,source:'live',records:[order]};
 test('only actual owner-matched cancellations after consent qualify',()=>{
  assert(eligibleCancellation(order,participant));
- for(const patch of [{participantId:null},{test:false},{synthetic:true},{cancelled:false},{cancelReason:'FRAUD'},{cancelReason:'INVENTORY'},{customerId:null},{events:[{kind:'order_cancelled',at:'2020-01-01T00:00:00Z'}]}])assert(!eligibleCancellation({...order,...patch},participant));
+ for(const patch of [{participantId:null},{test:false},{synthetic:true},{cancelled:false},{cancelReason:'UNKNOWN'},{cancelReason:null},{customerId:null},{events:[{kind:'order_cancelled',at:'2020-01-01T00:00:00Z'}]}])assert(!eligibleCancellation({...order,...patch},participant));
 });
 test('first cycle sends once; replays and changed order revisions never send again',async()=>{
  const db=fixture();let posts=0,keys=[];
@@ -45,5 +45,19 @@ test('staff cancellation gets category-specific context and one owner email',asy
  };
  const args={db,activity:{...activity,records:[staffOrder]},participant,config,transport};
  assert.equal(await ownerRecoveryCycle(args),1);assert.equal(await ownerRecoveryCycle(args),0);assert.equal(sends,1);
- const record=projectOwnerRecovery(db,participant,'now').responses[0];assert.equal(record.reference,'#1004');assert.match(record.uncertainty,/staff cancellation/);assert.match(record.message,/store staff cancelled/);db.close();
+ const record=projectOwnerRecovery(db,participant,'now').responses[0];assert.equal(record.reference,'#1004');assert.match(record.uncertainty,/staff-error category/);assert.match(record.message,/store staff cancelled/);db.close();
+});
+
+
+test('all documented cancellation categories carry distinct context and reserve one email',async()=>{
+ assert.deepEqual(OWNER_REASONS,['CUSTOMER','STAFF','INVENTORY','DECLINED','FRAUD','OTHER']);
+ for(const reason of OWNER_REASONS){
+  const db=fixture();let sends=0;const categoryOrder={...order,cancelReason:reason};let context;
+  const transport=async(url,options)=>{
+   if(url.includes('generateContent')){const body=JSON.parse(options.body);context=JSON.parse(body.contents[0].parts[0].text);assert.equal(context.cancelReason,reason);assert(context.cancellationContext.meaning);assert(context.cancellationContext.email);return Response.json({candidates:[{content:{parts:[{text:JSON.stringify(draft)}]}}]});}
+   if(url==='https://api.resend.com/emails'){sends++;return Response.json({id:'private-category-receipt'});}
+   return Response.json({last_event:'sent'});
+  };
+  const args={db,activity:{...activity,records:[categoryOrder]},participant,config,transport};assert.equal(await ownerRecoveryCycle(args),1);assert.equal(await ownerRecoveryCycle(args),0);assert.equal(sends,1);assert.equal(projectOwnerRecovery(db,participant,'now').responses[0].uncertainty,context.cancellationContext.uncertainty);db.close();
+ }
 });
