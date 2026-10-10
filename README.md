@@ -1,249 +1,236 @@
 # Resolve
 
-## Customer activity workspace
+### The right support email starts with the right context.
 
-[Open Resolve](https://resolve-starnest-ai.vercel.app/demo). The workspace shares the landing page’s logo, navigation, typography, colors and theme controls. It shows actual Shopify test orders instead of the earlier fictional shopping journeys. The saved snapshot contains three test orders and ten observed events. For the enrolled owner’s actual #1003 cancellation, Gemini prepared a support email and Resend accepted it. The workspace shows the message, evidence, and recorded delivery status. An older operator preview for #1001 remains clearly labelled; that customer is not attributed to the owner.
+Resolve connects Shopify order activity to an AI support workflow: observe what happened, understand the recorded cancellation category, generate a relevant email with Gemini, and preserve the message and provider status in an inspectable workspace.
 
-A server-side reader can refresh test orders every 30 seconds without a database. It uses the existing `SHOPIFY_SHOP_DOMAIN`, `SHOPIFY_CLIENT_ID`, and `SHOPIFY_CLIENT_SECRET` values, is restricted to the authorized Resolve test store, and projects only non-identifying test-order fields. When the connection is absent or fails, the UI identifies its saved snapshot as **recorded**, never live. Names, contact details, addresses, access tokens, checkout URLs and private provider receipts are excluded.
+**The working MVP uses real Shopify test orders, real Gemini generation, and real Resend API requests.** Its automatic sender is restricted to an explicitly enrolled owner testing their own store. It is an early retention product, not a claim of proven revenue recovery.
 
-Product browsing and cart capture are **not connected to this public workspace**, and unrestricted customer email remains **off**. An explicitly enrolled owner trial now has an automatic cancellation-support agent running locally; accepted messages and their content are shown in the workspace. A draft and a test-preview acceptance are not proof of automatic customer delivery. See [the connection guide](https://resolve-starnest-ai.vercel.app/guide). Refresh the saved source with `node --experimental-strip-types scripts/refresh-store-activity.mjs`; the operator preview script is an explicit send operation, not part of page loading.
+[**Open the live workspace →**](https://resolve-starnest-ai.vercel.app/demo) · [Product website](https://resolve-starnest-ai.vercel.app/) · [Connection guide](https://resolve-starnest-ai.vercel.app/guide)
 
-The older synthetic evidence files are retained as labelled historical test fixtures; they are not rendered by the current workspace. The historical audit below describes earlier runs, not the current live connection state.
+**No account or password is needed to inspect the public workspace.** Opening it does not place orders or send emails.
 
-## The problem and the approach
+![Resolve workspace showing actual Shopify order #1004, its payment/refund/cancellation timeline, a Gemini support email, and Resend acceptance.](docs/images/cancellation-workspace.png)
 
-Businesses often see isolated signals: a failed payment, an incomplete checkout, a support problem, or declining usage. A generic reminder can miss the actual issue. Resolve connects the available evidence to a customer profile and makes its recommendation inspectable before execution.
+*Actual workspace capture, October 10, 2026. The order used Shopify's test gateway; no live payment was charged.*
 
-1. **Collect:** synchronize Shopify customers and orders and receive signed commerce webhooks.
-2. **Understand:** assemble the timeline and calculate a transparent priority score from unresolved events.
-3. **Recommend:** ask Gemini for a possible cause, uncertainty, evidence references, an action category, and a message draft.
-4. **Check:** validate the response and enforce communication permissions, merchant policy, cooldowns, and execution guards.
-5. **Act and observe:** record the intervention and later events. The prepared judge walkthrough shows recorded test previews; the optional interactive sandbox simulates delivery and re-engagement. Production customer email requires additional configuration and verification.
+## Why Resolve exists
 
-The score is a **priority heuristic, not a churn probability**. A later purchase is an observed outcome, not proof that Resolve caused it.
+A customer asking to cancel, an inventory problem, and a staff mistake deserve different responses. A generic “come back” email can ignore the issue or blame the wrong person.
 
-## Earlier verification and current limits
+Resolve's approach is to connect **evidence → context → assistance**, with a record of what the system knew and what it did. The current working entry point is order cancellation. Browsing and cart abandonment are future integration work; they are not presented as captured activity.
 
-These results were recorded on October 9, 2026. “Local” means the application ran on the development machine; “external” means an actual provider API was used.
+For example:
 
-| Capability | Evidence and current limit |
+- **Customer cancellation:** confirm the cancellation and ask whether help is needed, without guessing the customer's motive.
+- **Staff cancellation:** acknowledge the store's cancellation, apologize for inconvenience, and offer assistance.
+- **Inventory cancellation:** acknowledge the recorded availability issue without inventing a restock date.
+
+A cancellation category is useful context. It does not prove dissatisfaction, churn, or the detailed reason behind a decision.
+
+## Explore the demo in one minute
+
+1. Open [the workspace](https://resolve-starnest-ai.vercel.app/demo). No installation or login is required.
+2. Find **#1004 — The Collection Snowboard: Oxygen**. Its timeline shows the actual order, successful test payment, refund, and `STAFF` cancellation.
+3. Read the email beside the timeline. It acknowledges a cancellation by the store, rather than implying the shopper requested it.
+4. Expand **Why this response?** for the explanation, uncertainty, and referenced events. Expand **View source record** to inspect the Shopify projection.
+5. Compare **#1003 — Selling Plans Ski Wax**, cancelled with `CUSTOMER`. Its email asks whether a problem occurred and offers help.
+
+**Connected to Shopify** means a successful live order read. **Recorded Shopify activity** means a timestamped saved snapshot. The page refreshes orders every 30 seconds while visible and retains the last confirmed records if a read fails.
+
+The email label distinguishes **accepted by Resend** from **delivery reported by Resend**. Acceptance is a real provider response, but does not by itself establish inbox placement or that the customer read the email.
+
+## What is working today
+
+Evidence snapshot: **October 10, 2026, Asia/Baku**. Counts may change as the owner creates new test orders.
+
+| Capability | Current evidence |
 | --- | --- |
-| Public website | Vercel landing page and `/demo` returned HTTP 200. Landing scenario and pause/resume controls worked. |
-| Current activity workspace | Actual Shopify test orders and a recorded operator-preview response replace the earlier synthetic default. Live order reads are tested locally; hosted status must be checked through the connection badge. |
-| Optional interactive sandbox | `/demo/ai` still uses `/api/judge`; the October 9 public audit returned HTTP 503. This storage-dependent workflow remains unverified on the hosted app. |
-| Merchant access gates | Public `/dashboard`, `/api/agent`, and `/api/retention` returned HTTP 401 without authentication. This is a smoke check, not a complete security audit. |
-| Shopify synchronization | Actual authorized development store: **5 customers, 2 orders, 0 abandoned checkouts** synchronized through the local application. Live abandoned-checkout recovery is not proved. |
-| Gemini analysis | Actual `gemini-3.5-flash-lite` API: **5 of 6 synthetic evaluation contexts produced validated results**; the sixth was rejected for conflicting with communication policy. |
-| Local judge journey | Real Gemini analysis, recorded approval, simulated delivery, simulated re-engagement, and history surviving reload. The checkout example’s score changed **45 → 0** after a synthetic completion event. |
-| Automated verification | **58 test entries passed; 0 failed; 0 skipped** in the October 9 local pass. Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
-| Real customer email and revenue | **Not verified.** No live customer retention result or inbox delivery is claimed. |
+| Public product and workspace | Deployed on Vercel at the links above; landing page and workspace share the Resolve design and navigation. |
+| Live Shopify order reads | Server-side Admin GraphQL reader, restricted to the authorized test store; the live connection was verified on the deployed workspace. |
+| Actual activity history | Saved snapshot: **4 test orders and 14 observed events**, including creation, successful test payment, cancellation, and refund. |
+| Customer matching | Explicitly enrolled owner profile; orders are matched using the exact private checkout email. Public records expose references, not contact details. |
+| Gemini support emails | Actual generation from the matched order's product, event history, and cancellation category. |
+| Real sending | **2 owner cancellation emails accepted by Resend:** #1003 (`CUSTOMER`) and #1004 (`STAFF`). Registration messages and operator previews are excluded from this count. |
+| Duplicate protection | A persistent reservation before generation/sending, one cancellation message per order, and a stable provider idempotency key. |
+| Inspectability | Timeline, generated content, explanation, uncertainty, provider status, and downloadable source projection. |
+| Category coverage | All six cancellation categories are enabled for the enrolled owner trial. CUSTOMER and STAFF have actual acceptance receipts; the remaining categories have controlled provider tests. |
+| Automated verification | **69 test entries passed, 0 failed, 0 skipped** in the latest full local suite. Type checking and the Vercel production build also passed during this iteration. |
 
-The six-context Gemini evaluation measures category agreement and evidence references. The rule baseline selected the expected categories in all six contexts. This small evaluation does **not** establish superior AI accuracy, churn prediction, commercial uplift, or complete factual correctness of every generated sentence.
+The older **#1001 operator preview** is labelled separately and belongs to a different test customer. It is not counted as an owner cancellation email. Historical synthetic fixtures remain in the repository for development; the current `/demo` workspace displays actual store records.
 
-See [the submission audit](SUBMISSION_AUDIT.md) and [preserved verification evidence](hackathon-evidence/submission/) for timestamps, results, and remaining blockers.
+## From Shopify event to email
 
-## Open the workspace
+1. **Observe:** read actual test orders and successful test transactions from Shopify. A processed timestamp alone is not treated as proof of payment.
+2. **Match:** require the named test store, the enrolled owner's exact checkout email, a real Shopify customer ID, and a cancellation after enrollment.
+3. **Reserve:** insert a unique `owner_recovery_messages` record before calling Gemini or Resend.
+4. **Generate:** send Gemini the order reference, product, observed events, category-specific guidance, and known uncertainties.
+5. **Validate:** require structured fields and known event references; reject unsupported links, email addresses, discount/urgency language, and invalid subject formatting.
+6. **Send:** submit the validated email only to the configured, enrolled test address through Resend.
+7. **Record:** persist the draft and provider acceptance, rejection, or uncertainty. A replay or timeout does not silently trigger another send.
+8. **Publish:** export only the allowed public fields. The owner's local agent can push updated records to GitHub, triggering Vercel deployment to the same public URL.
 
-Open [Customer activity](https://resolve-starnest-ai.vercel.app/demo) and scroll. No account or password is required. The source records are actual Shopify test orders, not invented browsing/cart sequences. A source log can be expanded. Order #1003 has the enrolled owner’s real cancellation-support email and provider acceptance receipt. Order #1001 retains a clearly labelled operator preview. Provider acceptance is separate from confirmed inbox delivery; general customer sending remains disabled.
+The automatic agent polls every **60 seconds**, independently of workspace visits. Email evidence appears on the hosted workspace after the updated record is published and deployed; it does not arrive through a direct shared cloud database.
 
-The status badge distinguishes recorded snapshots from successful live reads. When server-side Shopify credentials are configured, the page refreshes current test orders every 30 seconds. Without that connection, it preserves the timestamped saved records and clearly labels them as recorded. Detailed setup is in [the connection guide](https://resolve-starnest-ai.vercel.app/guide).
+### Cancellation categories
 
-The optional `/demo/ai` sandbox is a separate synthetic test fixture with storage-dependent analysis and simulated outcomes. It is not the current activity workspace.
+| Shopify category | Response guidance |
+| --- | --- |
+| `CUSTOMER` | Confirm cancellation, ask whether a problem occurred, offer help. |
+| `STAFF` | Acknowledge a store/staff cancellation, apologize, offer clarification. |
+| `INVENTORY` | Explain the recorded availability issue; do not promise restocking or alternatives. |
+| `DECLINED` | Offer payment/checkout support; do not request card details or invent a bank's reason. |
+| `FRAUD` | Use neutral security-check language; never accuse the shopper or request sensitive identity/payment details. |
+| `OTHER` | Confirm cancellation and offer clarification; do not invent a cause. |
 
-## Inspect the fictional data
+Category definitions follow [Shopify's OrderCancelReason documentation](https://shopify.dev/docs/api/admin-graphql/latest/enums/OrderCancelReason). Unknown categories are excluded. This coverage applies to the owner test trial, not unrestricted outreach to every merchant's customers.
 
-The optional `/demo/ai` sandbox includes seven additional fictional cases. Every case shows a plain-language story, expected response, consent status, UTC timeline, and expandable profile/event JSON. Download [the complete dataset](public/demo-data.json); it contains only fictional people and `example.com` email addresses.
-
-| Fictional case | What happened | Expected response |
-| --- | --- | --- |
-| Ava | Viewed Trail Shoes → cart → checkout → incomplete | Offer checkout help; stopping reason unknown |
-| Leo | Browsed products without a checkout | Observe; no email |
-| Maya | Completed the previously incomplete checkout | No recovery message |
-| Oliver | Requested order cancellation | Offer support without inventing a reason |
-| Noah | Incomplete checkout, email opted out | Internal review; no email |
-| Emma | A previous message was simulated one hour ago | Wait; contact cooldown applies |
-| Northstar | Fictional SaaS integration failures and falling usage | Technical troubleshooting |
-
-Expected responses are inspectable rule-baseline expectations, **not cached Gemini answers**. Live analysis runs separately and must pass validation. Interactive demo timestamps are relative to session creation; the downloadable snapshot uses fixed UTC times. No real email is sent. The public [English guide](https://resolve-starnest-ai.vercel.app/guide) explains judge steps and actual Shopify setup separately.
-
-## Architecture
+## Architecture and runtime boundaries
 
 ```mermaid
-flowchart LR
-    S[Shopify sync and signed webhooks] --> D[SQL profiles and event history]
-    X[Synthetic judge events] --> D
-    D --> R[Transparent risk rules]
-    R --> A[Gemini analysis and structured validation]
-    A --> P[Permissions, cooldowns and merchant policy]
-    P --> J[Recorded decision and execution job]
-    J --> M[Judge simulation]
-    J --> E[Resend integration: gated sending]
-    M --> O[Outcome events and audit history]
-    E --> O
-    O --> D
+flowchart TD
+    Shopify["Shopify test store"] --> Reader["Server-side order reader"]
+    Reader --> Workspace["Vercel customer activity workspace"]
+    Shopify --> Worker["Local owner agent: every 60 seconds"]
+    Worker --> Reserve["SQLite: unique send reservation"]
+    Reserve --> Gemini["Gemini: category-aware email draft"]
+    Gemini --> Validate["Structured validation and evidence checks"]
+    Validate --> Resend["Resend: enrolled owner only"]
+    Resend --> Records["SQLite: message and provider status"]
+    Records --> Projection["Public projection: contacts and secrets withheld"]
+    Projection --> GitHub["GitHub: updated evidence"]
+    GitHub --> Vercel["Vercel deployment: same URL"]
+    Vercel --> Workspace
 ```
 
-| Layer | Implementation |
+| Component | Implementation |
 | --- | --- |
-| Interface | React 19, Next.js 16, Tailwind, shadcn components |
-| Local Cloudflare runtime | Vinext/Vite with a local D1 binding |
-| Vercel runtime | Next.js with a server-side D1 HTTP adapter |
-| Persistence | D1-compatible SQL and versioned migrations; profiles, events, decisions, actions, jobs, and judge sessions |
-| AI | Gemini REST API, structured JSON, Zod validation, known-evidence checks, and policy validation |
-| Commerce | Shopify Admin GraphQL, OAuth implementation, signed webhook ingestion |
-| Messaging | Resend integration and signed delivery-receipt handling; real customer sending is not verified |
+| Interface | React 19, Next.js 16, Tailwind, shadcn components, Lucide icons. |
+| Commerce | Shopify Admin GraphQL; the repository also contains OAuth, synchronization, and signed webhook code. |
+| AI | Gemini REST API; the verified owner trial uses `gemini-3.5-flash-lite`. |
+| Email | Resend API with a stable idempotency key and separate acceptance/delivery states. |
+| Owner-trial persistence | Local SQLite in Wrangler's D1 state, with versioned SQL migrations. |
+| Hosting | Vercel serves the website, live order-reader endpoint, and published evidence. |
+| Optional storage-backed workflows | Cloudflare/Vinext local D1 binding and a Vercel-to-D1 HTTP adapter; these require separate managed database configuration. |
 
-`/api/judge` is the public, session-scoped simulation API. Merchant APIs require authentication outside local development. Separate environment adapters allow the same application logic to use a Cloudflare binding locally or managed D1 from Vercel.
+**The owner sender runs on the operator's computer.** Keep that computer and process running to handle new cancellations. Existing published records remain visible after it stops. This is not an always-on Vercel email worker or a fully deployed multi-merchant service.
 
-## Run locally
+## Run the public workspace locally
 
-**Prerequisites:** Git, Node.js 22.18 or newer, npm, and the ability to run Wrangler locally. Gemini is optional for the labelled fallback demonstration. Shopify and Resend credentials are not required for the synthetic judge journey.
+Use **Node.js 22.18+**, npm, and Git.
 
 ```sh
 git clone https://github.com/Zarifa197/resolve-starnest-ai.git
 cd resolve-starnest-ai
 npm ci
-npm run build
+npm run dev:vercel
 ```
 
-For a **new, empty local database**, apply the seven committed migrations in numeric order:
+Open the address printed by Next.js, normally `http://localhost:3000/demo`. No credentials are required to inspect the committed Shopify snapshots and recorded email content. Those records are historical evidence; this command does not recreate the store or send a new email.
+
+For live reads on an authorized checkout, add server-only values to an ignored `.env.local` file:
+
+```dotenv
+RESOLVE_RUNTIME=vercel
+SHOPIFY_SHOP_DOMAIN=resolve-test-xsmzpr1z.myshopify.com
+SHOPIFY_CLIENT_ID=your_shopify_client_id
+SHOPIFY_CLIENT_SECRET=your_private_shopify_client_secret
+EMAIL_TEST_TO=the_explicitly_enrolled_owner_address
+```
+
+The current reader and owner agent deliberately allow only the project's named test store. They are not a turnkey integration for an arbitrary Shopify merchant. Enrollment and credentials must belong to the authorized owner; do not substitute unrelated customer information.
+
+### Run the real owner-trial agent
+
+This section is for authorized maintainers of the test store. It requires the existing local D1/SQLite database, an enrolled participant, Shopify access, Gemini access, and a Resend test recipient compatible with the configured sender.
+
+For a **new empty local database**, build the Cloudflare target and apply all nine migrations in numeric order:
 
 ```sh
-for migration in \
-  drizzle/0000_unique_paibok.sql \
-  drizzle/0001_confused_captain_cross.sql \
-  drizzle/0002_open_expediter.sql \
-  drizzle/0003_retention_workflow.sql \
-  drizzle/0004_shopify_agent.sql \
-  drizzle/0005_judge_sessions.sql \
-  drizzle/0006_pixel_collectors.sql
-do
+npm run build
+for migration in drizzle/000*.sql; do
   npx wrangler d1 execute DB --local \
     --config dist/server/wrangler.json --file "$migration"
 done
 ```
 
-Do not rerun the base migrations against a populated database. Back up existing data and apply only migrations that are missing. Migration `0006` adds the optional anonymous pixel collector and its quotas.
+For an existing database, back it up and apply only missing migrations. Do not rerun the base schema blindly.
 
-Create an ignored `.dev.vars` file if using Gemini:
-
-```dotenv
-GEMINI_API_KEY=your_private_gemini_key
-```
-
-Then start the application:
+The owner scripts read an ignored `.dev.vars` file containing `SHOPIFY_SHOP_DOMAIN`, `SHOPIFY_CLIENT_ID`, `SHOPIFY_CLIENT_SECRET`, `GEMINI_API_KEY`, `RESEND_API_KEY`, and `EMAIL_TEST_TO`.
 
 ```sh
-npm run dev
+# Enrollment sends at most one registration confirmation to the configured owner.
+node scripts/register-test-participant.mjs
+
+# Read actual matching test orders and save the public projection.
+node --experimental-strip-types scripts/refresh-store-activity.mjs
+
+# Automatic processing; may send eligible owner cancellation emails.
+node --experimental-strip-types scripts/run-owner-recovery.mjs --watch
 ```
 
-Open the address printed by the server, normally `http://127.0.0.1:5173/demo`. The local development bypass is for loopback development only; do not expose that development server as merchant production hosting.
+For the existing owner's authorized GitHub/Vercel workflow, add `--publish` to the last command. It pushes only the activity/email projections, preserving unrelated repository changes. Publication requires configured Git access and triggers a deployment when the saved message/status changes.
 
-## Vercel configuration and the current storage blocker
+Never put keys, contact addresses, raw private provider receipts, `.dev.vars`, `.env.local`, or SQLite files in Git. The public projection deliberately withholds those fields.
 
-Import this repository with root directory `./` and framework preset **Next.js**. Use:
+## Deploy on Vercel
+
+Import the repository with root directory `./` and framework preset **Next.js**.
 
 | Setting | Value |
 | --- | --- |
 | Install command | `npm ci` |
 | Build command | `npm run build:vercel` |
-| Output directory | `.next-vercel` |
-| Runtime selector | `RESOLVE_RUNTIME=vercel` |
+| Output directory | `.next-vercel` — matches `next.config.ts`. |
+| Runtime variable | `RESOLVE_RUNTIME=vercel` |
 
-The build emits `.next-vercel`; an output-directory mismatch can make a successful Next.js build fail deployment. Use the Vercel project’s output setting if its configuration does not already specify that directory.
+Add the server-side Shopify values above to **Production** for live order reads, then redeploy. Without them, the workspace keeps its labelled recorded snapshot. The public reader does not require a hosted SQL database.
 
-Vercel functions require **managed storage**. The laptop’s `.wrangler` SQLite files are not durable Vercel storage. Create a dedicated Cloudflare D1 database and apply migrations `0000` through `0006` above to that database once, in numeric order. For authenticated Wrangler, use `--remote` and the actual managed database’s configuration/name instead of the local command above.
+The optional storage-backed merchant/sandbox workflows additionally require `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `CLOUDFLARE_D1_TOKEN`, and the applied SQL schema. A local SQLite file is not durable Vercel storage. See [deployment notes](DEPLOYMENT.md) for those workflows; their older audit state is separate from the currently verified activity workspace.
 
-Save these variables in **Vercel → Project → Environment Variables → Production**:
+The committed daily Vercel cron is not the owner's 60-second sender. Moving the trial to hosted automation requires durable storage, a deployed worker/scheduler, delivery-receipt verification, and production communication policy.
 
-| Variable | Required for | Description |
-| --- | --- | --- |
-| `RESOLVE_RUNTIME` | Vercel runtime | Set to `vercel`. |
-| `CLOUDFLARE_ACCOUNT_ID` | Persistent judge demo | Cloudflare account containing the database. |
-| `D1_DATABASE_ID` | Persistent judge demo | Managed D1 database UUID. |
-| `CLOUDFLARE_D1_TOKEN` | Persistent judge demo | Account-scoped D1 API credential. |
-| `GEMINI_API_KEY` | Actual AI analysis | Server-side Gemini key; otherwise use the labelled fallback. |
-
-After updating runtime variables, redeploy and test `/demo/ai` in a fresh browser session. The current 503 can result from absent/invalid database configuration, inaccessible D1, or unapplied schema. Its exact cause requires server logs; the public error alone does not identify it.
-
-Merchant workflows additionally use `PUBLIC_APP_URL`, `SESSION_SECRET`, `SHOPIFY_CLIENT_ID`, `SHOPIFY_CLIENT_SECRET`, `SHOPIFY_SHOP_DOMAIN`, and `CRON_SECRET`. Restricted email testing uses `RESEND_API_KEY` and `EMAIL_TEST_TO`; receipt verification uses `RESEND_WEBHOOK_SECRET`. See [DEPLOYMENT.md](DEPLOYMENT.md) and the environment declarations before enabling optional integrations.
-
-**Never put secrets in `NEXT_PUBLIC_*`, the README, screenshots, or Git history.** A verified sender, explicit merchant configuration, and communication eligibility are required before enabling real-customer sending. The committed Vercel cron is daily at 00:00 UTC; it does not provide rapid recovery scheduling.
-
-## Verify the implementation
+## Verification
 
 ```sh
 npm test
 npm run typecheck
 npm run build:vercel
-npm run build
 ```
 
-The automated suite covers retention rules, execution guards, judge-session isolation, webhook verification, OAuth checks, and the D1 adapter, using mocks where external services would otherwise be called. A passing suite or build does not prove hosted database connectivity, delivery, or revenue recovery.
+The latest full suite passed **69 test entries**, including owner matching, category routing, duplicate reservations, changed-order replays, send timeouts, rejected drafts, provider-status integrity, retention rules, session isolation, OAuth/webhook checks, and the D1 adapter. External providers are mocked in unit tests; they are not 69 live email sends.
 
-The model evaluation script is `scripts/evaluate-gemini.mjs`. It calls the actual Gemini API when configured and can consume API quota. Read its configuration requirements before running it. Existing provider evidence is preserved; failures are not removed from the reported denominator.
+The actual #1003 and #1004 trial records provide the separate Shopify/Gemini/Resend evidence. [Source activity](public/store-activity.json) and [owner email records](public/owner-recovery.json) are inspectable JSON projections. Earlier evaluation results and logs are preserved in [the submission audit](SUBMISSION_AUDIT.md) and [evidence directory](hackathon-evidence/submission/); historical synthetic outcomes are not evidence of actual customer recovery.
 
-## Code map
+## What is not connected yet
+
+- **Browsing and cart abandonment:** collector code exists, but its storefront deployment, identity linking, durable collection, and automatic outreach are not verified in the public workspace.
+- **General customer sending:** the current automatic sender is restricted to the consenting owner and actual test orders. Production sender/domain configuration and broader merchant policy still need verification.
+- **Hosted unattended email processing:** the current owner agent is local; managed storage and a hosted scheduler remain necessary.
+- **Retention measurement:** no recovered revenue, causal uplift, learned churn model, or customer-read proof is claimed.
+- **Inbound customer replies:** automatic reply ingestion and cause confirmation are not part of the verified workflow.
+
+The optional `/demo/ai` route contains synthetic development scenarios and a storage-dependent simulation. Its hosted behavior is not established by the current live-order demo. The repository's broader retention engine includes rules, policies, jobs, and simulated outcomes; these are separate from the verified owner trial described above.
+
+## Repository guide
 
 | Path | Purpose |
 | --- | --- |
-| `app/page.tsx`, `app/landing.css` | Public product presentation |
-| `app/demo/page.tsx`, `app/api/judge/route.ts` | Isolated judge demonstration |
-| `components/resolve/retention.tsx` | Timeline, diagnosis, action, and outcome interface |
-| `lib/retention-core.ts` | Scoring, schemas, and validation |
-| `lib/retention-gemini.ts` | Model request, evidence aliases, and structured analysis |
-| `lib/retention-store.ts`, `lib/retention-jobs.ts` | Persistence and intervention workflow |
-| `lib/shopify-client.ts`, `lib/shopify-intelligence.ts` | Shopify synchronization and commerce signals |
-| `lib/merchant-auth.ts`, `lib/merchant-policy.ts` | Authentication and execution policy |
-| `build/node-runtime.ts`, `lib/d1-http.ts` | Vercel-to-D1 storage adapter |
-| `drizzle/`, `tests/` | Database migrations and automated verification |
-| `extensions/resolve-pixel/`, `lib/pixel-collector.ts` | Anonymous storefront collection; not verified live |
+| `app/page.tsx`, `app/landing.css` | Product website. |
+| `app/demo/page.tsx`, `components/resolve/store-activity.tsx` | Current public activity workspace. |
+| `app/api/public/activity/route.ts`, `lib/store-activity.ts` | Restricted live Shopify reader and public projection. |
+| `lib/owner-cancellation.mjs`, `scripts/run-owner-recovery.mjs` | Category-aware owner email generation, sending, deduplication, and publication. |
+| `components/resolve/owner-response.tsx` | Email content, status, explanation, and evidence display. |
+| `scripts/register-test-participant.mjs`, `public/test-participant.json` | Owner enrollment and allowed public registration projection. |
+| `drizzle/0007_test_participant.sql`, `drizzle/0008_owner_recovery.sql` | Enrollment and email reservation/receipt tables. |
+| `lib/retention-core.ts`, `lib/retention-gemini.ts`, `lib/retention-jobs.ts` | Broader retention rules, analysis, and execution pipeline. |
+| `extensions/resolve-pixel/`, `lib/pixel-collector.ts` | Storefront collection implementation; not connected to the verified public flow. |
+| `tests/`, `hackathon-evidence/` | Automated checks and preserved historical evidence. |
 
-## Boundaries and unfinished work
+## Development and attribution
 
-- The hosted judge workflow needs storage repair and a complete public retest.
-- Shopify browsing capture is experimental and **not verified live**. Visiting a product and leaving is not established evidence of dissatisfaction.
-- Real Resend inbox delivery, production OAuth, and unattended hosted job execution remain unverified.
-- Production customer sending remains disabled pending configuration and live verification. The optional interactive sandbox simulates delivery; the prepared walkthrough records real restricted test-preview acceptance without claiming inbox delivery.
-- No learned churn model, return-time prediction, proven retention uplift, or closed-loop model learning is claimed.
-- Non-Shopify scenarios are synthetic examples; they do not establish production integrations with CRM, billing, or other SaaS providers.
-- Draft editing, inbound replies, complete privacy-erasure workflows, and operational cleanup require further work.
-- HTML motion/storyboard files in the local workspace are presentation assets, not evidence of runtime behavior or an exported After Effects video.
+Built by **Zarifa Ilyasova**. Codex assisted implementation and verification. The project reuses a Sites/Vinext scaffold, shadcn components, and the dependencies recorded in `package.json` and the lockfile. Whisperr.net was a visual reference for the landing page; Resolve does not claim authorship of that reference site. Dependency/vendor notices are retained in `vendor/` and `build/`.
 
-## Hackathon submission and attribution
+See [PROVENANCE.md](PROVENANCE.md) for the recorded development history, reused material, and competition-eligibility boundaries. This README describes the October 10 implementation; older audits and submission documents preserve their own dated states.
 
-The submission claim supported by current evidence is: **“Resolve connects Shopify customer events to an inspectable AI retention workflow; the local demonstration uses real Gemini and records simulated interventions and outcomes.”** The website is deployed, but the hosted workflow is not yet fully operational.
-
-Codex assisted implementation and verification. The project reuses a Sites/Vinext scaffold, shadcn components, and the libraries listed in `package.json`; retained vendor notices are in `vendor/` and `build/`. Whisperr.net was supplied as a landing-page visual reference. Resolve does not claim authorship of that reference site.
-
-Commit timestamps alone do not establish when every feature was built. Consult [PROVENANCE.md](PROVENANCE.md) and the organizers’ rules before declaring eligibility. Earlier [HACKATHON.md](HACKATHON.md) and [IMPLEMENTATION.md](IMPLEMENTATION.md) preserve historical states; use the dated submission audit for this verification pass.
-
-This README makes the project understandable and reproducible for human judges and automated screening. Passing an unspecified screening rubric is not guaranteed; documentation does not substitute for required submission fields, disclosures, or a functioning demo.
-
-### Real owner trial enrollment
-
-The workspace includes an explicitly enrolled owner test participant, persisted locally in `test_participants`, with the registration email reservation and acceptance stored in `test_participant_messages`. The owner’s existing #1002 test purchase was matched by its exact checkout email; #1001 belongs to another customer and is not attributed to the owner. The public projection exposes IDs, the registration message and status, while withholding email and provider identifiers. This is recorded local database evidence, not a live Vercel database or an automatic recovery-email claim.
-
-`node scripts/register-test-participant.mjs` registers the configured `EMAIL_TEST_TO` address and sends at most one registration confirmation. Re-running reconciles available provider receipts without resending. Then `node --experimental-strip-types scripts/refresh-store-activity.mjs` reads actual Shopify orders. `EMAIL_TEST_TO` is required server-side on Vercel to match new test orders to this enrolled participant; it must never be public.
-
-
-## Owner cancellation support: real verified trial
-
-The enrolled owner placed test order **#1003** for Selling Plans Ski Wax, paid with Shopify’s test gateway, and cancelled it. The live Shopify reader verified the owner match and the actual cancellation/refund timestamps. Gemini generated a support email from those events, and Resend accepted it for the owner’s configured address. The message and actual receipt are visible on `/demo`; acceptance does not by itself prove inbox delivery.
-
-The worker uses the persistent local SQLite database (`owner_recovery_messages`) and reads Shopify independently of the dashboard every 60 seconds. It only handles actual test orders from the named development store, matched by the exact enrolled checkout email, with any documented cancellation category after explicit trial enrollment: `CUSTOMER`, `STAFF`, `INVENTORY`, `DECLINED`, `FRAUD`, or `OTHER`. Gemini receives distinct guidance for each category: support inquiry, staff-error acknowledgement, availability assistance, payment support, neutral security-check clarification, or unspecified cancellation support. Unknown categories, unmatched customers, and old cancellations are excluded. Fraud-related labels never justify accusing a shopper. No detailed cause, restock date or bank reason is invented. A unique reservation is written before generation/sending. Replays, later order revisions and provider timeouts cannot silently resend the email. Private addresses, keys and provider IDs are never published.
-
-```sh
-# One real processing cycle: may send an eligible owner email.
-node --experimental-strip-types scripts/run-owner-recovery.mjs
-
-# Keep the owner trial running and publish newly recorded receipts to the existing site.
-# Requires the existing local provider configuration and authorized GitHub push access.
-node --experimental-strip-types scripts/run-owner-recovery.mjs --watch --publish
-```
-
-**October 10 validation:** 69 automated test entries passed with no failures, including owner matching, one email per order, replay/timeout handling, invalid draft rejection, and receipt status integrity. Type checking and the Vercel production build also passed.
-
-**Runtime boundary:** this is a local owner trial agent, not a Vercel-hosted, always-on multi-merchant email service. The computer and worker must remain running. Public workspace visits are read-only and never send emails. Saved receipts persist on the published website after the local worker stops; new receipts require processing and publication. Browsing/cart collection and cloud persistence remain separate integration work. Do not label an observed cancellation as proven dissatisfaction or claim measured retention.
-
-Category coverage follows [Shopify’s OrderCancelReason enum](https://shopify.dev/docs/api/admin-graphql/latest/enums/OrderCancelReason). The CUSTOMER and STAFF owner journeys have actual provider acceptance receipts. Remaining categories are validated with controlled provider tests; no fictional email receipts are published.
+**Current demonstrated claim:** Resolve turns actual Shopify test-order cancellations into category-aware Gemini support emails for an enrolled owner, with persistent send reservations and inspectable provider acceptance records on a deployed website.
