@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "checkedAt": "2026-10-09T23:58:01.127Z",
+  "agent": {
+    "mode": "local_owner_trial",
+    "pollSeconds": 60,
+    "note": "The owner trial agent runs on the operator’s computer. These are recorded receipts; this page does not send emails."
+  },
+  "responses": [
+    {
+      "reference": "#1003",
+      "participantId": "893b88e2-875d-4c1f-bd27-70a83724b8f0",
+      "orderUpdatedAt": "2026-10-09T23:50:15Z",
+      "generatedAt": "2026-10-09T23:56:57.568Z",
+      "purpose": "owner_cancellation_support",
+      "engine": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "subject": "Update regarding your test order #1003",
+      "message": "Hi there,\n\nWe are writing to confirm that your test order #1003 for the Selling Plans Ski Wax has been successfully cancelled, and a test refund has been issued to your account.\n\nDid you run into any issues while placing or managing this test order? We would love to know how everything went, and we are here to help if you have any questions or need a hand with anything.\n\nBest regards,\nSupport Team",
+      "explanation": "Sent a warm support email confirming the cancellation and refund of test order #1003 based on the provided event history.",
+      "uncertainty": "The cancellation is observed. The shopper’s motive and dissatisfaction are unknown.",
+      "evidenceKinds": [
+        "order_created",
+        "order_paid",
+        "refund_issued",
+        "order_cancelled"
+      ],
+      "delivery": {
+        "status": "accepted",
+        "checkedAt": "2026-10-09T23:57:01.803Z",
+        "note": "Resend accepted this cancellation email for the enrolled owner. Inbox delivery has not been confirmed."
+      }
+    }
+  ]
+}

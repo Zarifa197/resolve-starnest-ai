@@ -2,11 +2,11 @@
 
 ## Customer activity workspace
 
-[Open Resolve](https://resolve-starnest-ai.vercel.app/demo). The workspace shares the landing page’s logo, navigation, typography, colors and theme controls. It shows actual Shopify test orders instead of the earlier fictional shopping journeys. The saved snapshot contains two test orders, six observed events, and a recorded Gemini operator-preview message based on the actual cancellation. Resend accepted that operator preview; inbox delivery is not independently verified.
+[Open Resolve](https://resolve-starnest-ai.vercel.app/demo). The workspace shares the landing page’s logo, navigation, typography, colors and theme controls. It shows actual Shopify test orders instead of the earlier fictional shopping journeys. The saved snapshot contains three test orders and ten observed events. For the enrolled owner’s actual #1003 cancellation, Gemini prepared a support email and Resend accepted it. The workspace shows the message, evidence, and recorded delivery status. An older operator preview for #1001 remains clearly labelled; that customer is not attributed to the owner.
 
 A server-side reader can refresh test orders every 30 seconds without a database. It uses the existing `SHOPIFY_SHOP_DOMAIN`, `SHOPIFY_CLIENT_ID`, and `SHOPIFY_CLIENT_SECRET` values, is restricted to the authorized Resolve test store, and projects only non-identifying test-order fields. When the connection is absent or fails, the UI identifies its saved snapshot as **recorded**, never live. Names, contact details, addresses, access tokens, checkout URLs and private provider receipts are excluded.
 
-Product browsing and cart capture are **not connected to this public workspace**, and automatic customer email is **off**. A draft and a test-preview acceptance are not proof of automatic customer delivery. See [the connection guide](https://resolve-starnest-ai.vercel.app/guide). Refresh the saved source with `node --experimental-strip-types scripts/refresh-store-activity.mjs`; the operator preview script is an explicit send operation, not part of page loading.
+Product browsing and cart capture are **not connected to this public workspace**, and unrestricted customer email remains **off**. An explicitly enrolled owner trial now has an automatic cancellation-support agent running locally; accepted messages and their content are shown in the workspace. A draft and a test-preview acceptance are not proof of automatic customer delivery. See [the connection guide](https://resolve-starnest-ai.vercel.app/guide). Refresh the saved source with `node --experimental-strip-types scripts/refresh-store-activity.mjs`; the operator preview script is an explicit send operation, not part of page loading.
 
 The older synthetic evidence files are retained as labelled historical test fixtures; they are not rendered by the current workspace. The historical audit below describes earlier runs, not the current live connection state.
 
@@ -35,7 +35,7 @@ These results were recorded on October 9, 2026. “Local” means the applicatio
 | Shopify synchronization | Actual authorized development store: **5 customers, 2 orders, 0 abandoned checkouts** synchronized through the local application. Live abandoned-checkout recovery is not proved. |
 | Gemini analysis | Actual `gemini-3.5-flash-lite` API: **5 of 6 synthetic evaluation contexts produced validated results**; the sixth was rejected for conflicting with communication policy. |
 | Local judge journey | Real Gemini analysis, recorded approval, simulated delivery, simulated re-engagement, and history surviving reload. The checkout example’s score changed **45 → 0** after a synthetic completion event. |
-| Automated verification | **58 test entries passed; 0 failed; 0 skipped** in the latest local pass. Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
+| Automated verification | **58 test entries passed; 0 failed; 0 skipped** in the October 9 local pass. Tests include isolated SQL and controlled provider mocks. Type checking and local production builds passed. |
 | Real customer email and revenue | **Not verified.** No live customer retention result or inbox delivery is claimed. |
 
 The six-context Gemini evaluation measures category agreement and evidence references. The rule baseline selected the expected categories in all six contexts. This small evaluation does **not** establish superior AI accuracy, churn prediction, commercial uplift, or complete factual correctness of every generated sentence.
@@ -44,7 +44,7 @@ See [the submission audit](SUBMISSION_AUDIT.md) and [preserved verification evid
 
 ## Open the workspace
 
-Open [Customer activity](https://resolve-starnest-ai.vercel.app/demo) and scroll. No account or password is required. The source records are actual Shopify test orders, not invented browsing/cart sequences. A source log can be expanded. The cancellation has a recorded Gemini operator-preview message; acceptance by Resend is separate from confirmed inbox delivery and does not enable customer sending.
+Open [Customer activity](https://resolve-starnest-ai.vercel.app/demo) and scroll. No account or password is required. The source records are actual Shopify test orders, not invented browsing/cart sequences. A source log can be expanded. Order #1003 has the enrolled owner’s real cancellation-support email and provider acceptance receipt. Order #1001 retains a clearly labelled operator preview. Provider acceptance is separate from confirmed inbox delivery; general customer sending remains disabled.
 
 The status badge distinguishes recorded snapshots from successful live reads. When server-side Shopify credentials are configured, the page refreshes current test orders every 30 seconds. Without that connection, it preserves the timestamped saved records and clearly labels them as recorded. Detailed setup is in [the connection guide](https://resolve-starnest-ai.vercel.app/guide).
 
@@ -225,3 +225,23 @@ This README makes the project understandable and reproducible for human judges a
 The workspace includes an explicitly enrolled owner test participant, persisted locally in `test_participants`, with the registration email reservation and acceptance stored in `test_participant_messages`. The owner’s existing #1002 test purchase was matched by its exact checkout email; #1001 belongs to another customer and is not attributed to the owner. The public projection exposes IDs, the registration message and status, while withholding email and provider identifiers. This is recorded local database evidence, not a live Vercel database or an automatic recovery-email claim.
 
 `node scripts/register-test-participant.mjs` registers the configured `EMAIL_TEST_TO` address and sends at most one registration confirmation. Re-running reconciles available provider receipts without resending. Then `node --experimental-strip-types scripts/refresh-store-activity.mjs` reads actual Shopify orders. `EMAIL_TEST_TO` is required server-side on Vercel to match new test orders to this enrolled participant; it must never be public.
+
+
+## Owner cancellation support: real verified trial
+
+The enrolled owner placed test order **#1003** for Selling Plans Ski Wax, paid with Shopify’s test gateway, and cancelled it. The live Shopify reader verified the owner match and the actual cancellation/refund timestamps. Gemini generated a support email from those events, and Resend accepted it for the owner’s configured address. The message and actual receipt are visible on `/demo`; acceptance does not by itself prove inbox delivery.
+
+The worker uses the persistent local SQLite database (`owner_recovery_messages`) and reads Shopify independently of the dashboard every 60 seconds. It only handles actual test orders from the named development store, matched by the exact enrolled checkout email, with `CUSTOMER` cancellation after explicit trial enrollment. Fraud, inventory, unmatched customers, and old cancellations are excluded. A unique reservation is written before generation/sending. Replays, later order revisions and provider timeouts cannot silently resend the email. Private addresses, keys and provider IDs are never published.
+
+```sh
+# One real processing cycle: may send an eligible owner email.
+node --experimental-strip-types scripts/run-owner-recovery.mjs
+
+# Keep the owner trial running and publish newly recorded receipts to the existing site.
+# Requires the existing local provider configuration and authorized GitHub push access.
+node --experimental-strip-types scripts/run-owner-recovery.mjs --watch --publish
+```
+
+**October 10 validation:** 67 automated test entries passed with no failures, including owner matching, one email per order, replay/timeout handling, invalid draft rejection, and receipt status integrity. Type checking and the Vercel production build also passed.
+
+**Runtime boundary:** this is a local owner trial agent, not a Vercel-hosted, always-on multi-merchant email service. The computer and worker must remain running. Public workspace visits are read-only and never send emails. Saved receipts persist on the published website after the local worker stops; new receipts require processing and publication. Browsing/cart collection and cloud persistence remain separate integration work. Do not label an observed cancellation as proven dissatisfaction or claim measured retention.

@@ -16,5 +16,5 @@ test('published evidence excludes recipient, credentials and provider IDs; accep
 test('default workspace reads actual Shopify activity and does not render archived fictional histories',()=>{
  const page=readFileSync(new URL('../app/demo/page.tsx',import.meta.url),'utf8'),component=readFileSync(new URL('../components/resolve/store-activity.tsx',import.meta.url),'utf8');
  assert(page.includes('StoreActivity'));assert(!page.includes('SubmissionWalkthrough'));assert(!page.includes('Retention judge'));
- assert(component.includes("@/public/store-activity.json"));assert(component.includes('/api/public/activity'));assert(!component.includes('/api/retention'));assert(!component.includes('/submission-evidence.json'));assert(component.includes('Automatic email sending'));
+ assert(component.includes("@/public/store-activity.json"));assert(component.includes('/api/public/activity'));assert(!component.includes('/api/retention'));assert(!component.includes('/submission-evidence.json'));assert(component.includes('Owner cancellation emails accepted'));
 });
