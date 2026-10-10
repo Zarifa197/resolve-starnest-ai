@@ -2,9 +2,11 @@
 
 ### The right support email starts with the right context.
 
-Resolve connects Shopify order activity to an AI support workflow: observe what happened, understand the recorded cancellation category, generate a relevant email with Gemini, and preserve the message and provider status in an inspectable workspace.
+Resolve is an AI customer-retention product being built for different kinds of businesses. Its purpose is to connect customer activity to timely, relevant assistance: observe what happened, understand the available context with Gemini, send a helpful email, and preserve the evidence, message, and provider status in an inspectable workspace.
 
-**Planned expansion: behavior-based retention.** Resolve will also use Shopify browsing, cart, and checkout activity to identify possible friction or dissatisfaction, help Gemini understand the available context, and send a relevant support email to an identified customer under the merchant's outreach policy. These behavior-based triggers are planned; the verified automatic email flow today starts with order cancellations.
+**Shopify is the test integration for our demo, not the limit of the product vision.** We use a Shopify development store to demonstrate the workflow with actual test orders and cancellations. Connections to other business platforms are planned; they are not implemented or verified integrations today.
+
+**Planned expansion: behavior-based retention.** Resolve will use customer activity across connected business systems to identify possible friction or dissatisfaction, help Gemini understand the available context, and send a relevant support email to an identified customer under the business's outreach policy. Browsing, cart, and checkout signals are the next examples planned for the Shopify test integration; the verified automatic email flow today starts with order cancellations.
 
 **The working MVP uses real Shopify test orders, real Gemini generation, and real Resend API requests.** Its automatic sender is restricted to an explicitly enrolled owner testing their own store. It is an early retention product, not a claim of proven revenue recovery.
 
@@ -15,6 +17,12 @@ Resolve connects Shopify order activity to an AI support workflow: observe what 
 ![Resolve workspace showing actual Shopify order #1004, its payment/refund/cancellation timeline, a Gemini support email, and Resend acceptance.](docs/images/cancellation-workspace.png)
 
 *Actual workspace capture, October 10, 2026. The order used Shopify's test gateway; no live payment was charged.*
+
+## One retention workflow, different businesses
+
+The intended product serves businesses that want to understand why customers struggle and offer appropriate help before losing the relationship. Potential applications include online stores, subscription products, and service businesses, with evidence coming from their commerce, product, billing, or customer-support systems.
+
+The shared workflow is **customer activity → context → relevant assistance → an inspectable record**. Each business would connect its own data sources and define its outreach policy. Shopify provides the current demonstration of that workflow; it does not establish support for every platform or industry.
 
 ## Why Resolve exists
 
@@ -204,9 +212,9 @@ The latest full suite passed **69 test entries**, including owner matching, cate
 
 The actual #1003 and #1004 trial records provide the separate Shopify/Gemini/Resend evidence. [Source activity](public/store-activity.json) and [owner email records](public/owner-recovery.json) are inspectable JSON projections. Earlier evaluation results and logs are preserved in [the submission audit](SUBMISSION_AUDIT.md) and [evidence directory](hackathon-evidence/submission/); historical synthetic outcomes are not evidence of actual customer recovery.
 
-## Planned: support based on shopper behavior
+## Planned: support based on customer behavior
 
-The next integration extends the same **observe → understand → email → log** workflow to the shopping journey:
+The next integration extends the same **observe → understand → email → log** workflow to customer behavior. The Shopify test store gives us concrete shopping-journey examples to develop and validate first:
 
 | Planned signal | Intended response |
 | --- | --- |
@@ -220,6 +228,7 @@ Each eligible intervention will keep the triggering events, Gemini's explanation
 
 ## What is not connected yet
 
+- **Additional business platforms:** the broader retention product is intended for different businesses, but Shopify is the only integration demonstrated by the current owner trial.
 - **Browsing and cart abandonment:** collector code exists, but its storefront deployment, identity linking, durable collection, and automatic outreach are not verified in the public workspace.
 - **General customer sending:** the current automatic sender is restricted to the consenting owner and actual test orders. Production sender/domain configuration and broader merchant policy still need verification.
 - **Hosted unattended email processing:** the current owner agent is local; managed storage and a hosted scheduler remain necessary.
