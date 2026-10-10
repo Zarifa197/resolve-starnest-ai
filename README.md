@@ -2,11 +2,13 @@
 
 ### The right support email starts with the right context.
 
-Resolve is an AI customer-retention product being built for different kinds of businesses. Its purpose is to connect customer activity to timely, relevant assistance: observe what happened, understand the available context with Gemini, send a helpful email, and preserve the evidence, message, and provider status in an inspectable workspace.
+Resolve is an AI customer-retention product being built for different kinds of businesses. Its purpose is to connect customer activity to timely, relevant assistance: observe what happened, analyze the available context with AI, send a helpful email, and preserve the evidence, message, and provider status in an inspectable workspace.
 
 **Shopify is the test integration for our demo, not the limit of the product vision.** We use a Shopify development store to demonstrate the workflow with actual test orders and cancellations. Connections to other business platforms are planned; they are not implemented or verified integrations today.
 
-**Planned expansion: behavior-based retention.** Resolve will use customer activity across connected business systems to identify possible friction or dissatisfaction, help Gemini understand the available context, and send a relevant support email to an identified customer under the business's outreach policy. Browsing, cart, and checkout signals are the next examples planned for the Shopify test integration; the verified automatic email flow today starts with order cancellations.
+**Gemini is the AI provider used for this demo.** Resolve's product vision is not tied to one model or provider: the AI layer analyzes customer context and drafts appropriate assistance. The current implementation uses Gemini; support for additional providers remains future integration work.
+
+**Planned expansion: behavior-based retention.** Resolve will use customer activity across connected business systems to identify possible friction or dissatisfaction, use AI to interpret the available context, and send a relevant support email to an identified customer under the business's outreach policy. Browsing, cart, and checkout signals are the next examples planned for the Shopify test integration; the verified automatic email flow today starts with order cancellations.
 
 **The working MVP uses real Shopify test orders, real Gemini generation, and real Resend API requests.** Its automatic sender is restricted to an explicitly enrolled owner testing their own store. It is an early retention product, not a claim of proven revenue recovery.
 
@@ -60,7 +62,7 @@ Evidence snapshot: **October 10, 2026, Asia/Baku**. Counts may change as the own
 | Live Shopify order reads | Server-side Admin GraphQL reader, restricted to the authorized test store; the live connection was verified on the deployed workspace. |
 | Actual activity history | Saved snapshot: **4 test orders and 14 observed events**, including creation, successful test payment, cancellation, and refund. |
 | Customer matching | Explicitly enrolled owner profile; orders are matched using the exact private checkout email. Public records expose references, not contact details. |
-| Gemini support emails | Actual generation from the matched order's product, event history, and cancellation category. |
+| AI-generated support emails | Gemini powers the current demo, generating from the matched order's product, event history, and cancellation category. |
 | Real sending | **2 owner cancellation emails accepted by Resend:** #1003 (`CUSTOMER`) and #1004 (`STAFF`). Registration messages and operator previews are excluded from this count. |
 | Duplicate protection | A persistent reservation before generation/sending, one cancellation message per order, and a stable provider idempotency key. |
 | Inspectability | Timeline, generated content, explanation, uncertainty, provider status, and downloadable source projection. |
@@ -222,13 +224,14 @@ The next integration extends the same **observe → understand → email → log
 | A shopper adds products to the cart and leaves | A cart-specific email asking whether they need help with those items. |
 | A shopper starts checkout but does not complete it | A checkout-specific support email based on any recorded friction, without inventing a payment failure. |
 
-Gemini will distinguish observed behavior from an inferred cause. Leaving a store alone does not prove dissatisfaction; when the reason is unclear, the message should ask rather than assume. Outreach requires a linked customer email and applicable consent and merchant policy. Anonymous browsing cannot produce an identifiable email recipient by itself.
+The AI analysis will distinguish observed behavior from an inferred cause. Leaving a store alone does not prove dissatisfaction; when the reason is unclear, the message should ask rather than assume. Outreach requires a linked customer email and applicable consent and merchant policy. Anonymous browsing cannot produce an identifiable email recipient by itself.
 
-Each eligible intervention will keep the triggering events, Gemini's explanation, the email content, and the provider status visible in the workspace. This integration is **planned, not yet verified in the live demo**; it requires storefront collection, identity linking, durable storage, and a hosted processor.
+Each eligible intervention will keep the triggering events, the AI explanation, the email content, and the provider status visible in the workspace. This integration is **planned, not yet verified in the live demo**; it requires storefront collection, identity linking, durable storage, and a hosted processor.
 
 ## What is not connected yet
 
 - **Additional business platforms:** the broader retention product is intended for different businesses, but Shopify is the only integration demonstrated by the current owner trial.
+- **Additional AI providers:** Gemini is the implemented demo provider. Switching providers is planned, not an existing configurable capability.
 - **Browsing and cart abandonment:** collector code exists, but its storefront deployment, identity linking, durable collection, and automatic outreach are not verified in the public workspace.
 - **General customer sending:** the current automatic sender is restricted to the consenting owner and actual test orders. Production sender/domain configuration and broader merchant policy still need verification.
 - **Hosted unattended email processing:** the current owner agent is local; managed storage and a hosted scheduler remain necessary.
